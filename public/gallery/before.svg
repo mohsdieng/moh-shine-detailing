@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Before detailing placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2026"/>
+      <stop offset="1" stop-color="#0b0e12"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4048"/>
+      <stop offset="1" stop-color="#23282e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g opacity="0.9">
+    <path d="M120 380 q40 -120 150 -130 l180 -8 q90 0 150 70 l70 18 q40 12 40 50 l0 30 -660 0 z" fill="url(#body)"/>
+    <circle cx="250" cy="430" r="48" fill="#15191e"/>
+    <circle cx="250" cy="430" r="22" fill="#2a3037"/>
+    <circle cx="560" cy="430" r="48" fill="#15191e"/>
+    <circle cx="560" cy="430" r="22" fill="#2a3037"/>
+    <path d="M300 300 q60 -50 150 -45 l60 50 z" fill="#2c333a" opacity="0.5"/>
+  </g>
+  <g fill="#5a636d" opacity="0.55">
+    <circle cx="340" cy="350" r="6"/><circle cx="420" cy="370" r="4"/><circle cx="500" cy="345" r="7"/>
+    <circle cx="380" cy="400" r="3"/><circle cx="470" cy="410" r="5"/><circle cx="300" cy="360" r="4"/>
+  </g>
+  <text x="40" y="70" font-family="Poppins, Arial, sans-serif" font-size="34" font-style="italic" font-weight="700" fill="#9AA7B2" letter-spacing="4">BEFORE</text>
+</svg>

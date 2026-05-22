@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchored scrolling for the sticky header height. */
+    scroll-padding-top: 5rem;
+  }
+
+  /* Respect users who prefer reduced motion: kill smooth scroll + animations. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid #38b6ff;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: #38b6ff;
+    color: #000000;
+  }
+}
+
+@layer components {
+  /* Uppercase blue eyebrow label used above section headings. */
+  .eyebrow {
+    @apply text-shine font-medium uppercase tracking-eyebrow text-xs sm:text-sm;
+  }
+
+  /* Animated underline for nav links. */
+  .nav-link {
+    @apply relative font-medium text-white/80 transition-colors hover:text-white;
+  }
+  .nav-link::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 h-0.5 w-0 bg-shine transition-all duration-300;
+  }
+  .nav-link:hover::after,
+  .nav-link[data-active="true"]::after {
+    @apply w-full;
+  }
+}
+
+@layer utilities {
+  /* Subtle italic skew echoing the logo's athletic slant. */
+  .skew-display {
+    transform: skewX(-6deg);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
