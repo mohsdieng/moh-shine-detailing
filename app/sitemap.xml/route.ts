@@ -1,4 +1,5 @@
 import { site } from "@/lib/site";
+import { services } from "@/lib/services";
 
 /**
  * Hand-written sitemap route handler.
@@ -10,13 +11,23 @@ export const dynamic = "force-static";
 
 export function GET() {
   const lastmod = new Date().toISOString();
-  const routes = [
+
+  const baseRoutes = [
     { path: "", priority: "1.0" },
-    { path: "/services", priority: "0.8" },
-    { path: "/gallery", priority: "0.8" },
-    { path: "/about", priority: "0.8" },
+    { path: "/services", priority: "0.9" },
+    { path: "/packages", priority: "0.8" },
+    { path: "/gallery", priority: "0.7" },
+    { path: "/reviews", priority: "0.7" },
+    { path: "/about", priority: "0.7" },
     { path: "/contact", priority: "0.8" },
   ];
+
+  const serviceRoutes = services.map((s) => ({
+    path: `/services/${s.slug}`,
+    priority: "0.8",
+  }));
+
+  const routes = [...baseRoutes, ...serviceRoutes];
 
   const urls = routes
     .map(

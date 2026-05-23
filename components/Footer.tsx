@@ -10,9 +10,11 @@ import { services } from "@/lib/services";
 
 const explore = [
   { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "Gallery", href: "/gallery" },
   { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Packages", href: "/packages" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -20,7 +22,6 @@ const sectionLinks = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Why Moh's Shine", href: "/#why-us" },
   { label: "Service area", href: "/#service-area" },
-  { label: "Reviews", href: "/#contact" },
   { label: "FAQ", href: "/#faq" },
 ];
 
@@ -55,7 +56,10 @@ export function Footer() {
           >
             <Logo variant="dark" className="h-full" />
           </Link>
-          <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-muted">
+          <p className="mt-2 text-xs font-medium uppercase tracking-eyebrow text-shine">
+            {site.motto}
+          </p>
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-muted">
             {site.tagline} We bring the full detailing studio to your driveway —
             water, power and pro-grade products.
           </p>
@@ -82,10 +86,10 @@ export function Footer() {
             {services.map((s) => (
               <li key={s.slug}>
                 <Link
-                  href={`/services#${s.slug}`}
+                  href={`/services/${s.slug}`}
                   className="text-slate-muted transition-colors hover:text-shine"
                 >
-                  {s.title}
+                  {s.shortTitle}
                 </Link>
               </li>
             ))}

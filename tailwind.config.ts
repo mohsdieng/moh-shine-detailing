@@ -25,6 +25,12 @@ const config: Config = {
           card: "#141B22",
           muted: "#9AA7B2",
         },
+        // Metallic / chrome tones from the new "MOH'S" logo lettering.
+        chrome: {
+          DEFAULT: "#C9D2DA",
+          light: "#E8ECF0",
+          dark: "#6E7A85",
+        },
       },
       fontFamily: {
         // Bound to the next/font CSS variable defined in app/layout.tsx.

@@ -81,19 +81,19 @@ export function Hero() {
             className="eyebrow mb-6 flex items-center gap-3"
           >
             <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-shine" />
-            Mobile Detailing · Raleigh · Durham, NC
+            {site.motto}
           </motion.p>
 
           {/* Kinetic headline — three lines, each in its own split block. */}
           <h1 className="text-balance text-[12vw] font-bold leading-[0.92] tracking-tight sm:text-7xl md:text-[5.5rem] lg:text-[6.5rem]">
             <span className="block skew-display">
-              <SplitText text="Your car," />
+              <SplitText text="Premium mobile" />
             </span>
             <span className="block skew-display">
-              <SplitText text="detailed to a" />
+              <SplitText text="car detailing in" />
             </span>
             <span className="block skew-display text-shine">
-              <SplitText text="brilliant shine." />
+              <SplitText text="Raleigh-Durham." />
             </span>
           </h1>
 
@@ -105,7 +105,7 @@ export function Hero() {
           >
             Premium hand detailing that comes to your driveway. We bring the full
             studio — water, power and pro-grade products — to Raleigh, Durham and
-            the surrounding Triangle.
+            the surrounding NC Triangle.
           </motion.p>
 
           <motion.div
@@ -126,16 +126,26 @@ export function Hero() {
               </Button>
             </Magnetic>
             <Magnetic strength={10}>
-              <Button href="#contact" variant="secondary" size="lg">
-                Get a Quote
+              <Button href="/services" variant="secondary" size="lg">
+                View Services
               </Button>
             </Magnetic>
+            <Magnetic strength={6}>
+              <Button href="/contact" variant="ghost" size="lg">
+                Get a Quote →
+              </Button>
+            </Magnetic>
+          </motion.div>
 
-            {/* Inline meta: response time */}
-            <div className="flex items-center gap-3 text-xs text-slate-muted sm:ml-2">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]" />
-              Replies typically within an hour
-            </div>
+          {/* Response indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.85, ease }}
+            className="mt-5 flex items-center gap-3 text-xs text-slate-muted"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]" />
+            Replies typically within an hour · Serving Raleigh, Durham &amp; the Triangle
           </motion.div>
 
           {/* Animated stats strip */}

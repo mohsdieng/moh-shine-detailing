@@ -109,9 +109,59 @@ export function ShineIcon(props: IconProps) {
   );
 }
 
+/** Used for Ceramic Coating — a diamond / crystal facet shape. */
+export function DiamondIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 3h12l3 5-9 13L3 8l3-5Z" />
+      <path d="M3 8h18M9 3l-2 5 5 13M15 3l2 5-5 13" />
+    </svg>
+  );
+}
+
+/** Used for Headlight Restoration — a stylised projector headlight with light rays. */
+export function HeadlightIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 12a7 7 0 0 1 7-7h4a7 7 0 0 1 0 14h-4a7 7 0 0 1-7-7Z" />
+      <circle cx="10" cy="12" r="3" />
+      <path d="M18 9l2-1M18 12h2.5M18 15l2 1" />
+    </svg>
+  );
+}
+
+/** Used for Odor Removal — a leaf icon evoking fresh, neutralised air. */
+export function LeafIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 19c0-8 4-13 14-13 0 10-5 14-13 14a4 4 0 0 1-1-1Z" />
+      <path d="M5 19 17 7" />
+    </svg>
+  );
+}
+
+/** Used for Engine Bay — a stylised gear with a piston shape. */
+export function EngineIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 14V9h2l1-2h3l1 2h2l1-2h3l1 2h2v5h-2v3h-3v-3h-3v3H8v-3H5Z" />
+      <circle cx="11" cy="12" r="1.5" />
+    </svg>
+  );
+}
+
+/**
+ * Map of icon keys used by Service entries to their renderer.
+ * Add a new entry here whenever a new icon key is added to the Service type.
+ */
 export const serviceIcons = {
   wash: WashIcon,
   interior: InteriorIcon,
   sparkle: SparkleIcon,
   shield: ShieldIcon,
+  shine: ShineIcon,
+  diamond: DiamondIcon,
+  headlight: HeadlightIcon,
+  leaf: LeafIcon,
+  engine: EngineIcon,
 } as const;

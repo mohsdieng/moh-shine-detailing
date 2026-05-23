@@ -6,10 +6,12 @@
 
 export const site = {
   name: "Moh's Shine Detailing",
-  shortName: "MS Detailing",
+  shortName: "Moh's Shine",
+  /** Catchphrase from the logo ribbon. */
+  motto: "Flawless Shine, Anywhere, Anytime",
   tagline: "Premium mobile car detailing in Raleigh & Durham, NC.",
   description:
-    "Premium mobile car detailing serving Raleigh, Durham & the surrounding NC Triangle. Hand wash, interior detailing, full details and paint correction — we come to you.",
+    "Premium mobile car detailing serving Raleigh, Durham & the surrounding NC Triangle. Interior, exterior, ceramic coating, paint correction, headlight restoration and more — we come to you.",
 
   // Production URL — used for canonical links, sitemap and Open Graph.
   url: "https://www.mohsshinedetailing.com",

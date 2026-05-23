@@ -1,22 +1,30 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { services } from "@/lib/services";
 import { site } from "@/lib/site";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
+import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/anim/Magnetic";
 import { serviceIcons } from "@/components/icons";
 import { JsonLd, breadcrumbSchema, serviceSchema } from "@/components/JsonLd";
 import { Faq } from "@/components/sections/Faq";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Detailing Services & Pricing in Raleigh & Durham, NC",
+  title: "Mobile Car Detailing Services in Raleigh & Durham, NC",
   description:
-    "Mobile car detailing services in Raleigh & Durham: exterior hand wash & towel dry from $50, interior detailing, full details and paint correction. We come to you.",
+    "Every mobile detailing service we offer in Raleigh-Durham — wash & wax from $50, interior & exterior detailing, ceramic coating, paint correction, headlight restoration and more.",
   path: "/services",
 });
 
+/**
+ * Services hub — lists all nine offerings as detailed cards linking through to
+ * the dynamic /services/[slug] detail pages. Each service still gets its own
+ * Service JSON-LD here for hub-level discoverability.
+ */
 export default function ServicesPage() {
   return (
     <>
@@ -27,13 +35,13 @@ export default function ServicesPage() {
         ])}
       />
       {services.map((s) => (
-        <JsonLd key={s.slug} data={serviceSchema(s.title, s.blurb)} />
+        <JsonLd key={s.slug} data={serviceSchema(s.title, s.seoDescription)} />
       ))}
 
       <PageHeader
         eyebrow="What we do"
-        title="Mobile detailing services & pricing"
-        intro="Every service is performed by hand at your location with pro-grade products. Prices below are starting points — final pricing depends on vehicle size and condition."
+        title="Mobile detailing services for every kind of driver"
+        intro="From a weekly wash & wax to multi-stage paint correction and ceramic coating — performed by hand at your home or office across Raleigh, Durham and the Triangle."
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Services", path: "/services" },
@@ -41,125 +49,57 @@ export default function ServicesPage() {
       />
 
       <Section>
-        <div className="flex flex-col gap-6">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => {
             const Icon = serviceIcons[service.icon];
             return (
               <Reveal key={service.slug} delay={i * 0.05}>
-                <article
-                  id={service.slug}
-                  className="scroll-mt-28 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-card to-black"
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-card to-black p-7 transition-all duration-300 hover:-translate-y-1 hover:border-shine/50 hover:shadow-[0_20px_50px_-20px_rgba(56,182,255,0.45)]"
                 >
-                  <div className="grid gap-8 p-7 sm:p-10 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
-                    {/* Left: icon + title + pricing */}
-                    <div>
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-shine/30 bg-shine/10 text-shine">
-                          <Icon width={30} height={30} />
-                        </div>
-                        <span className="font-mono text-xs uppercase tracking-widest text-shine/70">
-                          0{i + 1} / 0{services.length}
-                        </span>
-                      </div>
+                  {/* Decorative hover glow */}
+                  <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-shine/15 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
 
-                      <h2 className="mt-6 text-2xl font-bold tracking-tight sm:text-3xl">
-                        {service.title}
-                      </h2>
-                      <p className="mt-3 text-sm leading-relaxed text-slate-muted sm:text-base">
-                        {service.description}
-                      </p>
-
-                      <dl className="mt-6 grid grid-cols-2 gap-4 border-y border-white/10 py-4 text-xs sm:text-sm">
-                        <div>
-                          <dt className="uppercase tracking-wider text-slate-muted">
-                            Duration
-                          </dt>
-                          <dd className="mt-1 font-semibold text-white">
-                            {service.duration}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="uppercase tracking-wider text-slate-muted">
-                            Ideal for
-                          </dt>
-                          <dd className="mt-1 font-medium text-white/90">
-                            {service.idealFor}
-                          </dd>
-                        </div>
-                      </dl>
-
-                      {/* Pricing */}
-                      <div className="mt-6">
-                        <p className="text-xs uppercase tracking-wider text-slate-muted">
-                          Pricing {service.priceLocked && <span className="text-shine">(confirmed)</span>}
-                        </p>
-                        {service.tiers ? (
-                          <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-white/10">
-                            {(["sedan", "suv", "truck"] as const).map((t) => (
-                              <div
-                                key={t}
-                                className="border-r border-white/10 px-3 py-3 text-center last:border-r-0"
-                              >
-                                <p className="text-[10px] uppercase tracking-wider text-slate-muted">
-                                  {t === "suv" ? "SUV" : t}
-                                </p>
-                                <p className="mt-0.5 text-base font-bold text-shine">
-                                  {service.tiers![t]}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="mt-2 text-2xl font-bold text-shine">{service.price}</p>
-                        )}
-                      </div>
-
-                      <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                        <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                          Book this detail
-                        </Button>
-                        <Button href="/contact" variant="secondary">
-                          Ask a question
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Right: includes + add-ons */}
-                    <div className="grid gap-6">
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-slate-muted">
-                          What&apos;s included
-                        </p>
-                        <ul className="mt-3 grid gap-2 text-sm text-white/90 sm:grid-cols-2">
-                          {service.includes.map((item) => (
-                            <li key={item} className="flex items-start gap-2.5">
-                              <Check />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {service.addOns && (
-                        <div>
-                          <p className="text-xs uppercase tracking-wider text-slate-muted">
-                            Popular add-ons
-                          </p>
-                          <ul className="mt-3 flex flex-wrap gap-2">
-                            {service.addOns.map((add) => (
-                              <li
-                                key={add}
-                                className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/85"
-                              >
-                                + {add}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+                  <div className="relative z-10 flex items-start justify-between gap-3">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-shine/30 bg-shine/10 text-shine transition-colors group-hover:bg-shine group-hover:text-black">
+                      <Icon width={26} height={26} />
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-shine/70">
+                      0{i + 1} / 0{services.length}
+                    </span>
                   </div>
-                </article>
+
+                  <h2 className="relative z-10 mt-5 text-xl font-bold leading-snug tracking-tight">
+                    {service.title}
+                  </h2>
+                  <p className="relative z-10 mt-2 line-clamp-3 text-sm leading-relaxed text-slate-muted">
+                    {service.blurb}
+                  </p>
+
+                  <div className="relative z-10 mt-5 flex flex-wrap items-center gap-3 text-xs text-slate-muted">
+                    <span className="rounded-full border border-white/10 px-2.5 py-1">
+                      {service.duration}
+                    </span>
+                    {service.priceLocked && (
+                      <span className="rounded-full border border-shine/40 bg-shine/10 px-2.5 py-1 font-semibold text-shine">
+                        Confirmed price
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative z-10 mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-5">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-slate-muted">
+                        From
+                      </p>
+                      <p className="mt-0.5 font-semibold text-shine">{service.price}</p>
+                    </div>
+                    <span className="text-sm font-semibold text-white transition-all group-hover:translate-x-1 group-hover:text-shine">
+                      Learn more →
+                    </span>
+                  </div>
+                </Link>
               </Reveal>
             );
           })}
@@ -167,44 +107,31 @@ export default function ServicesPage() {
 
         <Reveal
           delay={0.1}
-          className="mt-14 rounded-3xl border border-white/10 bg-slate-surface p-8 text-center sm:p-12"
+          className="mt-14 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-shine/15 to-slate-card p-8 text-center sm:p-12"
         >
-          <h2 className="text-2xl font-bold sm:text-3xl">
-            Ready to book?
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Not sure which fits your car?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-slate-muted sm:text-base">
-            Reserve your spot online through Square, or message us for a custom
-            package built around your vehicle.
+            Tell us about your vehicle and we&apos;ll recommend the right detail —
+            usually within the hour.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-              Book Now
-            </Button>
-            <Button href="/contact" variant="secondary" size="lg">
-              Get a Quote
-            </Button>
+            <Magnetic>
+              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
+                Book a Detail
+              </Button>
+            </Magnetic>
+            <Magnetic strength={6}>
+              <Button href="/contact" variant="secondary" size="lg">
+                Get a Quote
+              </Button>
+            </Magnetic>
           </div>
         </Reveal>
       </Section>
 
       <Faq />
     </>
-  );
-}
-
-function Check() {
-  return (
-    <svg
-      className="mt-0.5 h-4 w-4 flex-shrink-0 text-shine"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m5 12 5 5L20 6" />
-    </svg>
   );
 }
