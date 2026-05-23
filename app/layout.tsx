@@ -84,7 +84,7 @@ export default function RootLayout({
         <ScrollProgress />
         <Cursor />
         <Header />
-        <main id="main">
+        <main id="main" className="relative">
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />

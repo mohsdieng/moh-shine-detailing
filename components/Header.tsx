@@ -71,6 +71,7 @@ export function Header() {
   }, [pathname]);
 
   return (
+    <>
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || open
@@ -140,8 +141,11 @@ export function Header() {
           </span>
         </button>
       </div>
+    </header>
 
-      {/* Fullscreen mobile menu */}
+      {/* Fullscreen mobile menu — rendered as a sibling of <header> so its
+          `position: fixed` is relative to the viewport rather than the header's
+          backdrop-filter containing block. */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -207,6 +211,6 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

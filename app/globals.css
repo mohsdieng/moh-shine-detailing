@@ -12,6 +12,9 @@
     scroll-behavior: smooth;
     /* Offset anchored scrolling for the sticky header height. */
     scroll-padding-top: 5rem;
+    /* The scroll container framer-motion measures against — needs a
+       non-static position so target offsets compute correctly. */
+    position: relative;
   }
 
   /* Respect users who prefer reduced motion: kill smooth scroll + animations. */
