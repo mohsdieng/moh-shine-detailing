@@ -45,10 +45,22 @@ const config: Config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        // Soft expanding ring used on the service-area map pins.
+        "pulse-ring": {
+          "0%": { transform: "scale(0.6)", opacity: "0.9" },
+          "100%": { transform: "scale(2.4)", opacity: "0" },
+        },
+        // Slow vertical float for hero decorative orbs.
+        float: {
+          "0%,100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-14px)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
         shimmer: "shimmer 2.5s linear infinite",
+        "pulse-ring": "pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
+        float: "float 6s ease-in-out infinite",
       },
       backgroundImage: {
         "shine-grid":

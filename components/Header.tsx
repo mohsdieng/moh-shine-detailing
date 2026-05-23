@@ -2,21 +2,28 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Logo } from "./Logo";
 import { Button } from "./ui/Button";
+import { Magnetic } from "./anim/Magnetic";
 import { site } from "@/lib/site";
 
 const navLinks = [
-  { label: "Services", href: "/#services" },
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Service area", href: "/#service-area" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Services", href: "/#services", section: "services" },
+  { label: "Process", href: "/#how-it-works", section: "how-it-works" },
+  { label: "Why us", href: "/#why-us", section: "why-us" },
+  { label: "Gallery", href: "/#gallery", section: "gallery" },
+  { label: "Area", href: "/#service-area", section: "service-area" },
+  { label: "FAQ", href: "/#faq", section: "faq" },
+  { label: "Contact", href: "/#contact", section: "contact" },
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -33,15 +40,49 @@ export function Header() {
     };
   }, [open]);
 
+  // Close the menu whenever the route changes (e.g. after navigation).
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Scroll-spy: highlight the nav item whose section is in view (home only).
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection(null);
+      return;
+    }
+    const sections = navLinks
+      .map((l) => document.getElementById(l.section))
+      .filter((el): el is HTMLElement => !!el);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the most-visible section.
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: [0.1, 0.25, 0.5, 0.75] },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [pathname]);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || open
-          ? "border-b border-white/10 bg-black/90 backdrop-blur-md"
+          ? "border-b border-white/10 bg-black/85 backdrop-blur-md"
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-container items-center justify-between px-5 sm:h-20 sm:px-8">
+      <div
+        className={`mx-auto flex max-w-container items-center justify-between px-5 transition-all duration-300 sm:px-8 ${
+          scrolled || open ? "h-16 sm:h-[68px]" : "h-20 sm:h-24"
+        }`}
+      >
         <Link
           href="/"
           aria-label={`${site.name} — home`}
@@ -51,23 +92,30 @@ export function Header() {
           <Logo variant="dark" className="h-full" />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="nav-link text-sm">
+            <Link
+              key={link.href}
+              href={link.href}
+              data-active={activeSection === link.section ? "true" : undefined}
+              className="nav-link text-sm"
+            >
               {link.label}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-            Book Now
-          </Button>
+          <Magnetic strength={8}>
+            <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
+              Book Now
+            </Button>
+          </Magnetic>
         </div>
 
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-md text-white lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-md text-white lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -93,35 +141,72 @@ export function Header() {
         </button>
       </div>
 
-      {/* Mobile menu */}
-      <div
-        id="mobile-menu"
-        className={`overflow-hidden border-t border-white/10 bg-black/95 backdrop-blur-md transition-[max-height] duration-300 lg:hidden ${
-          open ? "max-h-96" : "max-h-0 border-t-0"
-        }`}
-      >
-        <nav aria-label="Mobile" className="flex flex-col gap-1 px-5 py-4">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-2 py-3 text-base font-medium text-white/85 transition-colors hover:bg-white/5 hover:text-white"
-              onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Button
-            href={site.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 w-full"
-            size="lg"
+      {/* Fullscreen mobile menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 top-16 z-40 overflow-y-auto bg-black/95 backdrop-blur-md sm:top-[68px] lg:hidden"
           >
-            Book Now
-          </Button>
-        </nav>
-      </div>
+            <nav
+              aria-label="Mobile"
+              className="mx-auto flex max-w-container flex-col gap-1 px-5 py-8 sm:px-8"
+            >
+              {navLinks.map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 + i * 0.04, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="border-b border-white/5"
+                >
+                  <Link
+                    href={link.href}
+                    className="flex items-center justify-between py-5 text-3xl font-bold tracking-tight text-white transition-colors hover:text-shine"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span>{link.label}</span>
+                    <span className="text-shine">→</span>
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+                className="mt-6 flex flex-col gap-3"
+              >
+                <Button
+                  href={site.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="lg"
+                  className="w-full"
+                >
+                  Book Now
+                </Button>
+                <Button
+                  href={site.phoneHref}
+                  variant="secondary"
+                  size="lg"
+                  className="w-full"
+                >
+                  Call {site.phone}
+                </Button>
+              </motion.div>
+
+              <p className="mt-8 text-xs uppercase tracking-wider text-slate-muted">
+                Serving Raleigh · Durham · Cary · Chapel Hill · Apex · Wake Forest
+              </p>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

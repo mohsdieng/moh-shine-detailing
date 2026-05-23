@@ -77,4 +77,21 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Native horizontal carousels look cleaner without the OS scrollbar. */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hover on devices that actually support hover — avoids "sticky" hover
+     states on touch screens. Used by Header & a few interactive helpers. */
+  @media (hover: none) {
+    .hover-only:hover {
+      background: transparent;
+    }
+  }
 }
