@@ -52,22 +52,32 @@
 }
 
 @layer components {
-  /* Uppercase blue eyebrow label used above section headings. */
+  /* Refined uppercase label used above section headings — luxury spacing,
+     subtle chrome tone, never shouty. */
   .eyebrow {
-    @apply text-shine font-medium uppercase tracking-eyebrow text-xs sm:text-sm;
+    @apply text-chrome font-medium uppercase tracking-eyebrow text-[11px] sm:text-xs;
+  }
+  /* Variant when the eyebrow needs the brand accent (rare). */
+  .eyebrow-shine {
+    @apply text-shine font-medium uppercase tracking-eyebrow text-[11px] sm:text-xs;
   }
 
   /* Animated underline for nav links. */
   .nav-link {
-    @apply relative font-medium text-white/80 transition-colors hover:text-white;
+    @apply relative font-medium text-white/75 transition-colors hover:text-white;
   }
   .nav-link::after {
     content: "";
-    @apply absolute -bottom-1 left-0 h-0.5 w-0 bg-shine transition-all duration-300;
+    @apply absolute -bottom-1 left-0 h-px w-0 bg-shine transition-all duration-300;
   }
   .nav-link:hover::after,
   .nav-link[data-active="true"]::after {
     @apply w-full;
+  }
+
+  /* Thin horizontal divider used between cinematic sections. */
+  .hairline {
+    @apply h-px w-full bg-chrome-line;
   }
 }
 

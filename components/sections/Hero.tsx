@@ -11,18 +11,17 @@ import { Button } from "../ui/Button";
 import { Container } from "../ui/Container";
 import { Magnetic } from "../anim/Magnetic";
 import { SplitText } from "../anim/SplitText";
-import { Marquee } from "../anim/Marquee";
-import { CountUp } from "../anim/CountUp";
 import { site } from "@/lib/site";
-import { trustChips, stats } from "@/lib/content";
 
 /**
- * Hero — full-viewport landing block.
- * - Kinetic split-text headline with italic skew
- * - Parallax bg layers (grid, radial glow, oversized logo mark)
- * - Magnetic CTA buttons
- * - Live count-up stats
- * - Edge-to-edge trust marquee at the bottom
+ * Hero — luxury automotive launch-page style.
+ *
+ * - Full-bleed dark cinematic background (deep navy gradient + chrome grid +
+ *   subtle parallax radial highlight + an oversized faded MS wordmark).
+ * - Restrained typography: single multi-line H1, tight tracking, no skew.
+ * - Two CTAs only — primary Get a Quote, secondary Book Now.
+ * - Thin chrome rails and corner accents instead of bouncy chips.
+ * - Vertical scroll indicator on the right edge.
  */
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -32,11 +31,9 @@ export function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-
-  // Parallax depths — kept subtle so they don't hurt LCP perception.
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "30%"]);
-  const midY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "16%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "8%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "22%"]);
+  const wordmarkY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "14%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "6%"]);
   const fade = useTransform(scrollYProgress, [0, 0.85], [1, reduce ? 1 : 0]);
 
   const ease = [0.22, 1, 0.36, 1] as const;
@@ -44,167 +41,149 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-black pt-24 sm:pt-28"
+      className="relative flex min-h-[100svh] items-end overflow-hidden bg-navy-950 pb-20 pt-28 sm:items-center sm:pb-0 sm:pt-0"
     >
-      {/* Layer 1: blueprint grid + glow */}
+      {/* Layer 1 — cinematic background */}
       <motion.div
+        aria-hidden="true"
         style={{ y: bgY }}
         className="absolute inset-0"
-        aria-hidden="true"
       >
-        <div className="absolute inset-0 bg-shine-grid bg-[size:64px_64px] opacity-50" />
-        <div className="absolute left-1/2 top-[-10%] h-[70vh] w-[70vh] -translate-x-1/2 rounded-full bg-shine/25 blur-[160px] animate-float" />
-        <div className="absolute bottom-[-15%] right-[-10%] h-[55vh] w-[55vh] rounded-full bg-shine/10 blur-[140px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_70%,#000_100%)]" />
+        {/* Base gradient — deep navy → black bottom for vignette */}
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-800 via-navy-950 to-black" />
+        {/* Studio key light off-center */}
+        <div className="absolute left-[55%] top-[20%] h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/4 rounded-full bg-shine/15 blur-[160px]" />
+        {/* Cool rim light from the left edge */}
+        <div className="absolute -left-[20%] top-1/3 h-[60vh] w-[60vh] rounded-full bg-shine/8 blur-[140px]" />
+        {/* Chrome grid for premium depth */}
+        <div className="absolute inset-0 bg-shine-grid bg-[size:72px_72px] opacity-30 [mask-image:radial-gradient(ellipse_at_55%_40%,black,transparent_75%)]" />
+        {/* Bottom vignette */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black via-black/60 to-transparent" />
       </motion.div>
 
-      {/* Layer 2: oversized italic "MS" watermark, parallaxes mid-speed */}
+      {/* Layer 2 — oversized faded MS wordmark, light parallax */}
       <motion.div
-        style={{ y: midY }}
-        className="pointer-events-none absolute inset-0 flex items-center justify-end overflow-hidden"
         aria-hidden="true"
+        style={{ y: wordmarkY }}
+        className="pointer-events-none absolute inset-0 flex items-center justify-end overflow-hidden"
       >
         <span
-          className="select-none pr-[-2vw] text-[55vw] font-black italic leading-none text-white/[0.025] sm:text-[40vw] lg:text-[28vw]"
-          style={{ letterSpacing: "-0.05em" }}
+          className="select-none pr-[2vw] text-[40vw] font-bold italic leading-none text-white/[0.025] sm:pr-[6vw] sm:text-[28vw] lg:text-[22vw]"
+          style={{ letterSpacing: "-0.06em" }}
         >
           MS
         </span>
       </motion.div>
 
+      {/* Side rail — vertical hairline + numeral, desktop only */}
+      <div className="pointer-events-none absolute inset-y-0 left-8 hidden flex-col items-center pb-12 pt-32 lg:flex">
+        <div className="h-full w-px bg-chrome-line" />
+        <span className="mt-4 -rotate-90 font-mono text-[10px] uppercase tracking-widest text-chrome/60 origin-center whitespace-nowrap">
+          01 / Premium Mobile Detailing
+        </span>
+      </div>
+
+      {/* Right rail — scroll cue */}
+      <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-4 lg:flex">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-chrome/60 [writing-mode:vertical-rl]">
+          Scroll
+        </span>
+        <span className="relative h-16 w-px bg-chrome-line">
+          <motion.span
+            className="absolute inset-x-0 top-0 mx-auto block h-4 w-px bg-shine"
+            animate={reduce ? {} : { y: [0, 48, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+      </div>
+
+      {/* Content */}
       <Container className="relative z-10">
-        <motion.div style={{ y: contentY, opacity: fade }} className="max-w-5xl">
+        <motion.div style={{ y: contentY, opacity: fade }} className="max-w-3xl">
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease }}
-            className="eyebrow mb-6 flex items-center gap-3"
+            transition={{ duration: 0.6, ease }}
+            className="eyebrow mb-7 flex items-center gap-3"
           >
-            <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-shine" />
-            {site.motto}
+            <span className="inline-block h-[6px] w-[6px] rounded-full bg-shine" />
+            Mobile Detailing · Raleigh – Durham, NC
           </motion.p>
 
-          {/* Kinetic headline — three lines, each in its own split block. */}
-          <h1 className="text-balance text-[12vw] font-bold leading-[0.92] tracking-tight sm:text-7xl md:text-[5.5rem] lg:text-[6.5rem]">
-            <span className="block skew-display">
-              <SplitText text="Premium mobile" />
+          {/* Restrained headline — single concept, three short lines */}
+          <h1 className="text-balance text-[12vw] font-bold leading-[0.95] tracking-tightest sm:text-6xl md:text-[5rem] lg:text-[5.75rem]">
+            <span className="block text-white">
+              <SplitText text="Premium Mobile" stagger={0.05} />
             </span>
-            <span className="block skew-display">
-              <SplitText text="car detailing in" />
+            <span className="block text-white">
+              <SplitText text="Detailing," stagger={0.05} />
             </span>
-            <span className="block skew-display text-shine">
-              <SplitText text="Raleigh-Durham." />
+            <span className="block text-shine italic">
+              <SplitText text="Anywhere." stagger={0.05} />
             </span>
           </h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5, ease }}
-            className="mt-8 max-w-xl text-base leading-relaxed text-slate-muted sm:text-lg md:text-xl"
+            transition={{ duration: 0.6, delay: 0.45, ease }}
+            className="mt-7 max-w-xl text-base font-light leading-relaxed text-chrome sm:text-lg"
           >
-            Premium hand detailing that comes to your driveway. We bring the full
-            studio — water, power and pro-grade products — to Raleigh, Durham and
-            the surrounding NC Triangle.
+            Luxury car care delivered to your home or office across the Raleigh –
+            Durham Triangle. Hand-finished by craftsmen, on your driveway, on
+            your schedule.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.62, ease }}
-            className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+            transition={{ duration: 0.6, delay: 0.6, ease }}
+            className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
           >
-            <Magnetic>
+            <Magnetic strength={10}>
+              <Button href="/contact" size="lg">
+                Get a Quote
+                <Arrow />
+              </Button>
+            </Magnetic>
+            <Magnetic strength={8}>
               <Button
                 href={site.bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                variant="secondary"
                 size="lg"
               >
                 Book Now
-                <Arrow />
-              </Button>
-            </Magnetic>
-            <Magnetic strength={10}>
-              <Button href="/services" variant="secondary" size="lg">
-                View Services
-              </Button>
-            </Magnetic>
-            <Magnetic strength={6}>
-              <Button href="/contact" variant="ghost" size="lg">
-                Get a Quote →
               </Button>
             </Magnetic>
           </motion.div>
 
-          {/* Response indicator */}
+          {/* Bottom meta strip with hairline */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.85, ease }}
-            className="mt-5 flex items-center gap-3 text-xs text-slate-muted"
+            transition={{ duration: 0.6, delay: 0.85, ease }}
+            className="mt-14 max-w-xl"
           >
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]" />
-            Replies typically within an hour · Serving Raleigh, Durham &amp; the Triangle
-          </motion.div>
-
-          {/* Animated stats strip */}
-          <motion.dl
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.78, ease }}
-            className="mt-14 grid max-w-3xl grid-cols-2 gap-x-8 gap-y-6 border-t border-white/10 pt-8 sm:grid-cols-4"
-          >
-            {stats.map((s) => (
-              <div key={s.label}>
-                <dt className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  <CountUp
-                    to={s.value}
-                    prefix={s.prefix}
-                    suffix={s.suffix}
-                    decimals={s.decimals}
-                  />
-                </dt>
-                <dd className="mt-1 text-[11px] uppercase tracking-wider text-slate-muted sm:text-xs">
-                  {s.label}
-                </dd>
+            <div className="hairline" />
+            <dl className="mt-5 grid grid-cols-3 gap-6 text-xs font-medium uppercase tracking-widest text-chrome/80">
+              <div>
+                <dt className="text-chrome/50">Service</dt>
+                <dd className="mt-1 text-white">By hand</dd>
               </div>
-            ))}
-          </motion.dl>
+              <div>
+                <dt className="text-chrome/50">Coverage</dt>
+                <dd className="mt-1 text-white">NC Triangle</dd>
+              </div>
+              <div>
+                <dt className="text-chrome/50">Response</dt>
+                <dd className="mt-1 text-white">Within the hour</dd>
+              </div>
+            </dl>
+          </motion.div>
         </motion.div>
       </Container>
-
-      {/* Bottom: edge-to-edge trust marquee */}
-      <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-black/60 py-4 backdrop-blur-md">
-        <Marquee duration={36}>
-          {trustChips.map((chip) => (
-            <span
-              key={chip}
-              className="flex items-center gap-6 px-6 text-sm font-medium uppercase tracking-[0.18em] text-white/70"
-            >
-              {chip}
-              <span className="inline-block h-1.5 w-1.5 rotate-45 bg-shine" aria-hidden="true" />
-            </span>
-          ))}
-        </Marquee>
-      </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        className="absolute bottom-20 left-1/2 hidden -translate-x-1/2 sm:block"
-        aria-hidden="true"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.5 }}
-      >
-        <div className="flex h-10 w-6 items-start justify-center rounded-full border border-white/25 p-1.5">
-          <motion.span
-            className="block h-2 w-1 rounded-full bg-shine"
-            animate={reduce ? {} : { y: [0, 10, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-      </motion.div>
     </section>
   );
 }
@@ -212,15 +191,16 @@ export function Hero() {
 function Arrow() {
   return (
     <svg
-      width="16"
-      height="16"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.2"
+      strokeWidth="2.4"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="transition-transform duration-300 group-hover:translate-x-1"
     >
       <path d="M5 12h14M13 5l7 7-7 7" />
     </svg>

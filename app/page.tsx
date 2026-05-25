@@ -1,24 +1,27 @@
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
-import { WhyUs } from "@/components/sections/WhyUs";
-import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Gallery } from "@/components/sections/Gallery";
-import { ServiceArea } from "@/components/sections/ServiceArea";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { Faq } from "@/components/sections/Faq";
+import { PackagesTeaser } from "@/components/sections/PackagesTeaser";
 import { Contact } from "@/components/sections/Contact";
 
+/**
+ * Homepage — luxury automotive launch page narrative.
+ *
+ * Order mirrors a Mercedes/Audi launch page:
+ *   Hero  →  Service features  →  Gallery  →  Reviews  →  Packages  →  Contact
+ *
+ * Secondary sections (How it works, Why us, Service area, FAQ) live on their
+ * own routes for SEO. The home stays focused and editorial.
+ */
 export default function HomePage() {
   return (
     <>
       <Hero />
       <Services />
-      <WhyUs />
-      <HowItWorks />
       <Gallery />
-      <ServiceArea />
       <Testimonials />
-      <Faq />
+      <PackagesTeaser />
       <Contact />
     </>
   );

@@ -1,203 +1,145 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { Section } from "../ui/Section";
-import { StarIcon } from "../icons";
-import { Magnetic } from "../anim/Magnetic";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Container } from "../ui/Container";
+import { Reveal } from "../Reveal";
 import { testimonials } from "@/lib/content";
 
 /**
- * Testimonials — horizontal carousel built on native scroll-snap so dragging
- * with a touch / trackpad always feels right. Prev / Next buttons scroll by
- * one card; a soft autoplay rotates every 6s and pauses on hover or focus.
+ * Reviews — luxury single-quote rotator.
+ *
+ * One large editorial pull-quote at a time with thin pagination dots and an
+ * auto-advance every 7s that pauses on hover/focus. Restrained, magazine-like.
  */
 export function Testimonials() {
-  const trackRef = useRef<HTMLUListElement>(null);
-  const [active, setActive] = useState(0);
+  const reduce = useReducedMotion();
+  const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  // Compute one-card width including the gap so prev / next can scroll exactly.
-  const stepPx = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return 0;
-    const first = el.querySelector<HTMLLIElement>("li");
-    if (!first) return 0;
-    const styles = window.getComputedStyle(el);
-    const gap = parseFloat(styles.columnGap || "0") || 0;
-    return first.getBoundingClientRect().width + gap;
-  }, []);
-
-  const scrollToIndex = useCallback(
-    (idx: number) => {
-      const el = trackRef.current;
-      if (!el) return;
-      const clamped = Math.max(0, Math.min(testimonials.length - 1, idx));
-      el.scrollTo({ left: stepPx() * clamped, behavior: "smooth" });
-    },
-    [stepPx],
-  );
-
-  // Mirror native scroll position back into the active index for the dots.
   useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    let raf = 0;
-    const update = () => {
-      const idx = Math.round(el.scrollLeft / Math.max(1, stepPx()));
-      setActive(idx);
-    };
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, [stepPx]);
-
-  // Gentle autoplay.
-  useEffect(() => {
-    if (paused) return;
+    if (paused || reduce) return;
     const id = setInterval(() => {
-      const next = (active + 1) % testimonials.length;
-      scrollToIndex(next);
-    }, 6000);
+      setIndex((i) => (i + 1) % testimonials.length);
+    }, 7000);
     return () => clearInterval(id);
-  }, [active, paused, scrollToIndex]);
+  }, [paused, reduce]);
 
-  const ids = useMemo(() => testimonials.map((_, i) => `t-${i}`), []);
+  const current = testimonials[index];
 
   return (
-    <Section
-      eyebrow="Kind words"
-      heading={
-        <>
-          Drivers love the <span className="text-shine">shine.</span>
-        </>
-      }
-      intro="Real reviews from people around the Triangle who've trusted us with their vehicles. Drag the cards or use the arrows below."
+    <section
+      id="reviews"
+      className="relative scroll-mt-24 border-t border-chrome-line bg-black py-20 sm:py-28 lg:py-32"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
     >
-      <div
-        className="relative"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocusCapture={() => setPaused(true)}
-        onBlurCapture={() => setPaused(false)}
-      >
-        {/* Edge fade masks */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-black to-transparent" aria-hidden="true" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-black to-transparent" aria-hidden="true" />
+      <Container>
+        <div className="grid items-start gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+          <Reveal>
+            <p className="eyebrow mb-6">Reviews</p>
+            <h2 className="text-balance text-4xl font-bold leading-[1.05] tracking-tightest sm:text-5xl">
+              In their <span className="text-shine italic">own words.</span>
+            </h2>
+            <p className="mt-6 max-w-sm text-base font-light leading-relaxed text-chrome">
+              Honest reviews from drivers across Raleigh, Durham, Cary and the
+              broader NC Triangle.
+            </p>
 
-        <ul
-          ref={trackRef}
-          aria-roledescription="carousel"
-          aria-label="Customer testimonials"
-          className="hide-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4 [scroll-padding-left:0px] sm:gap-6"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {testimonials.map((review, i) => (
-            <li
-              key={ids[i]}
-              className="w-[88%] flex-shrink-0 snap-start sm:w-[60%] lg:w-[38%]"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${testimonials.length}`}
-            >
-              <motion.figure
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="group flex h-full flex-col rounded-3xl border border-white/10 bg-gradient-to-br from-slate-card to-black p-7 transition-colors duration-300 hover:border-shine/40 sm:p-9"
+            {/* Rating + link to full reviews page */}
+            <div className="mt-10 border-t border-chrome-line pt-6">
+              <div className="flex items-center gap-3 text-shine">
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <Star key={s} />
+                ))}
+              </div>
+              <p className="mt-3 text-xs uppercase tracking-widest text-chrome">
+                4.9 average · 1,200+ details
+              </p>
+              <Link
+                href="/reviews"
+                className="group mt-6 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:text-shine"
               >
-                {/* Quote glyph */}
-                <span
-                  aria-hidden="true"
-                  className="font-serif text-6xl leading-none text-shine/40"
-                >
-                  &ldquo;
+                Read all reviews
+                <span className="text-shine transition-transform duration-300 group-hover:translate-x-1.5">
+                  →
                 </span>
+              </Link>
+            </div>
+          </Reveal>
 
-                <div
-                  className="mt-1 flex gap-1 text-shine"
-                  aria-label={`${review.rating} out of 5 stars`}
+          <Reveal delay={0.1}>
+            <div className="relative">
+              {/* Big quote glyph */}
+              <span
+                aria-hidden="true"
+                className="absolute -top-10 -left-2 select-none font-serif text-[10rem] leading-none text-shine/15"
+              >
+                &ldquo;
+              </span>
+
+              <AnimatePresence mode="wait">
+                <motion.blockquote
+                  key={index}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative text-balance text-2xl font-light leading-snug text-white sm:text-3xl lg:text-[2.25rem]"
                 >
-                  {Array.from({ length: review.rating }).map((_, s) => (
-                    <motion.span
-                      key={s}
-                      initial={{ scale: 0.6, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.2 + s * 0.06, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <StarIcon />
-                    </motion.span>
+                  {current.quote}
+                </motion.blockquote>
+              </AnimatePresence>
+
+              <div className="mt-10 flex items-center justify-between gap-6 border-t border-chrome-line pt-6">
+                <AnimatePresence mode="wait">
+                  <motion.figcaption
+                    key={`name-${index}`}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <p className="font-semibold text-white">{current.name}</p>
+                    <p className="mt-1 text-xs uppercase tracking-widest text-chrome">
+                      {current.detail}
+                    </p>
+                  </motion.figcaption>
+                </AnimatePresence>
+
+                {/* Pagination dots */}
+                <ul className="flex items-center gap-2" role="tablist" aria-label="Choose review">
+                  {testimonials.map((_, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={i === index}
+                        aria-label={`Show review ${i + 1}`}
+                        onClick={() => setIndex(i)}
+                        className={`h-px transition-all duration-500 ${
+                          i === index ? "w-8 bg-shine" : "w-4 bg-chrome/30 hover:bg-chrome"
+                        }`}
+                      />
+                    </li>
                   ))}
-                </div>
-
-                <blockquote className="mt-4 flex-1 text-base leading-relaxed text-white/90 sm:text-lg">
-                  {review.quote}
-                </blockquote>
-
-                <figcaption className="mt-6 border-t border-white/10 pt-5">
-                  <p className="font-semibold text-white">{review.name}</p>
-                  <p className="mt-1 text-xs uppercase tracking-wider text-slate-muted">
-                    {review.detail}
-                  </p>
-                </figcaption>
-              </motion.figure>
-            </li>
-          ))}
-        </ul>
-
-        {/* Controls */}
-        <div className="mt-8 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-2" role="tablist" aria-label="Choose testimonial">
-            {testimonials.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                role="tab"
-                aria-selected={active === i}
-                aria-label={`Go to testimonial ${i + 1}`}
-                onClick={() => scrollToIndex(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  active === i ? "w-8 bg-shine" : "w-3 bg-white/20 hover:bg-white/40"
-                }`}
-              />
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Magnetic strength={6}>
-              <button
-                type="button"
-                aria-label="Previous testimonial"
-                onClick={() => scrollToIndex(active - 1)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-shine hover:text-shine"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M19 12H5M12 5l-7 7 7 7" />
-                </svg>
-              </button>
-            </Magnetic>
-            <Magnetic strength={6}>
-              <button
-                type="button"
-                aria-label="Next testimonial"
-                onClick={() => scrollToIndex(active + 1)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-shine hover:text-shine"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </Magnetic>
-          </div>
+                </ul>
+              </div>
+            </div>
+          </Reveal>
         </div>
-      </div>
-    </Section>
+      </Container>
+    </section>
+  );
+}
+
+function Star() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.3l6.5-.9L12 2.5Z" />
+    </svg>
   );
 }

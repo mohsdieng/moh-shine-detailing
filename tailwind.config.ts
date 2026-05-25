@@ -25,11 +25,21 @@ const config: Config = {
           card: "#141B22",
           muted: "#9AA7B2",
         },
-        // Metallic / chrome tones from the new "MOH'S" logo lettering.
+        // Deep navy — used for cinematic section backgrounds and hero gradient.
+        // Sits between pure black and the slate surface for layered depth.
+        navy: {
+          950: "#04070C",
+          900: "#070C14",
+          800: "#0B121C",
+          700: "#101A26",
+        },
+        // Metallic / chrome tones from the "MOH'S" logo lettering — used for
+        // thin accent lines, eyebrow text and luxury button borders.
         chrome: {
           DEFAULT: "#C9D2DA",
           light: "#E8ECF0",
           dark: "#6E7A85",
+          line: "rgba(201, 210, 218, 0.15)",
         },
       },
       fontFamily: {
@@ -37,7 +47,8 @@ const config: Config = {
         sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
       },
       letterSpacing: {
-        eyebrow: "0.2em",
+        eyebrow: "0.32em",
+        tightest: "-0.04em",
       },
       maxWidth: {
         container: "1200px",

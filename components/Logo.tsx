@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 type LogoProps = {
   /**
@@ -21,14 +21,16 @@ type LogoProps = {
 /**
  * Logo component.
  *
- * 1. By default, renders the real high-resolution brand mark from
- *    `/public/logo.png` (the chrome "MOH'S Shine Detailing" badge with the
- *    detail-car illustration + ribbon).
- * 2. If that file is missing or fails to load, falls back to an inline SVG
- *    monogram so the layout never breaks during development or when assets
- *    are still being uploaded.
+ * Strategy:
+ *  1. On mount, probe `/logo.png` with `new Image()` in the background.
+ *  2. While probing (or if the file is missing), render the inline SVG
+ *     monogram so the header is never visually broken.
+ *  3. Once the bitmap loads, swap it in seamlessly.
  *
- * Replace `/public/logo.png` to update the brand mark site-wide.
+ * This avoids the "broken image / alt-text flash" you get if you just render
+ * an <img> tag pointing at a file that doesn't exist yet.
+ *
+ * Drop the new brand bitmap at /public/logo.png to enable it site-wide.
  */
 export function Logo({
   variant = "dark",
@@ -36,24 +38,36 @@ export function Logo({
   className,
   title = "Moh's Shine Detailing",
 }: LogoProps) {
-  const [imgFailed, setImgFailed] = useState(false);
+  const [bitmapReady, setBitmapReady] = useState(false);
 
-  if (!imgFailed) {
-    // Native <img> rather than next/image so a missing file degrades
-    // gracefully (we catch onError) instead of throwing at build time.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const probe = new window.Image();
+    probe.onload = () => setBitmapReady(true);
+    // onerror intentionally a no-op — we just stay on the SVG fallback.
+    probe.src = "/logo.png";
+  }, []);
+
+  if (bitmapReady) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src="/logo.png"
         alt={title}
-        onError={() => setImgFailed(true)}
         className={className}
         style={{ height: "100%", width: "auto", objectFit: "contain" }}
       />
     );
   }
 
-  return <LogoSvg variant={variant} showWordmark={showWordmark} className={className} title={title} />;
+  return (
+    <LogoSvg
+      variant={variant}
+      showWordmark={showWordmark}
+      className={className}
+      title={title}
+    />
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -65,7 +79,7 @@ function LogoSvg({
   showWordmark,
   className,
   title,
-}: Required<Omit<LogoProps, "variant" | "showWordmark" | "title" | "className">> & {
+}: {
   variant: "dark" | "light";
   showWordmark: boolean;
   className?: string;

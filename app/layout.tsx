@@ -8,6 +8,7 @@ import { JsonLd, localBusinessSchema } from "@/components/JsonLd";
 import { ScrollProgress } from "@/components/anim/ScrollProgress";
 import { Cursor } from "@/components/anim/Cursor";
 import { PageTransition } from "@/components/anim/PageTransition";
+import { IntroLoader } from "@/components/anim/IntroLoader";
 
 // Self-hosted Poppins via next/font (no layout shift, font-display: swap).
 const poppins = Poppins({
@@ -81,6 +82,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <IntroLoader />
         <ScrollProgress />
         <Cursor />
         <Header />

@@ -1,112 +1,121 @@
 "use client";
 
 import Link from "next/link";
-import { Section } from "../ui/Section";
+import { Container } from "../ui/Container";
 import { Reveal } from "../Reveal";
 import { Button } from "../ui/Button";
 import { Magnetic } from "../anim/Magnetic";
-import { Tilt } from "../anim/Tilt";
+import { Feature } from "./Feature";
 import { services } from "@/lib/services";
-import { serviceIcons } from "../icons";
 import { site } from "@/lib/site";
 
 /**
- * Services section — clean grid of all nine offerings.
+ * Services section on the home page — five "feature" rows in alternating
+ * left/right orientation, leading into a compact list of every other service.
  *
- * Each card links through to its dedicated `/services/[slug]` detail page.
- * On hover the card tilts subtly (Tilt) and the icon flips colour.
+ * The selection here mirrors the user's launch-page narrative:
+ *   Exterior · Interior · Paint Correction · Ceramic Coating · Odor Removal
  */
+const featuredSlugs = [
+  "exterior-detail",
+  "interior-detail",
+  "paint-correction",
+  "ceramic-coating",
+  "odor-removal",
+] as const;
+
 export function Services() {
+  const featured = featuredSlugs
+    .map((slug) => services.find((s) => s.slug === slug))
+    .filter((s): s is NonNullable<typeof s> => !!s);
+
+  const remaining = services.filter((s) => !featuredSlugs.includes(s.slug as (typeof featuredSlugs)[number]));
+
   return (
-    <Section
-      id="services"
-      eyebrow="What we do"
-      heading={
-        <>
-          Detailing services, <span className="text-shine">done by hand.</span>
-        </>
-      }
-      intro="Every service is performed by hand with pro-grade products at your home or office. Tap a card to see what's included, the process and pricing."
-    >
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((service, i) => {
-          const Icon = serviceIcons[service.icon];
-          return (
-            <Reveal key={service.slug} delay={i * 0.05}>
-              <Tilt max={4}>
+    <section id="services" className="relative scroll-mt-24 bg-black">
+      {/* Section intro — restrained, premium */}
+      <Container className="py-20 sm:py-28">
+        <Reveal className="max-w-2xl">
+          <p className="eyebrow mb-6">The services</p>
+          <h2 className="text-balance text-4xl font-bold leading-[1.05] tracking-tightest sm:text-5xl md:text-6xl">
+            Hand-finished detailing,
+            <br />
+            <span className="text-shine italic">on your driveway.</span>
+          </h2>
+          <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-chrome sm:text-lg">
+            Every service is performed by hand using pro-grade products. Five
+            cornerstone offerings — and a deeper menu beyond.
+          </p>
+        </Reveal>
+      </Container>
+
+      {/* Five featured services — alternating layout */}
+      {featured.map((service, i) => (
+        <Feature
+          key={service.slug}
+          service={service}
+          index={i + 1}
+          total={featured.length}
+          align={i % 2 === 0 ? "left" : "right"}
+        />
+      ))}
+
+      {/* Compact list of every other service */}
+      <div className="border-t border-chrome-line bg-navy-950 py-20 sm:py-28">
+        <Container>
+          <Reveal>
+            <p className="eyebrow mb-5">Also available</p>
+            <h3 className="text-balance text-3xl font-bold tracking-tightest sm:text-4xl">
+              The full menu.
+            </h3>
+          </Reveal>
+
+          <ul className="mt-10 divide-y divide-chrome-line border-y border-chrome-line">
+            {remaining.map((s, i) => (
+              <Reveal as="li" key={s.slug} delay={i * 0.04}>
                 <Link
-                  href={`/services/${service.slug}`}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-card to-black p-7 transition-all duration-300 hover:border-shine/50 hover:shadow-[0_20px_50px_-20px_rgba(56,182,255,0.45)]"
+                  href={`/services/${s.slug}`}
+                  className="group flex items-center justify-between gap-6 py-6 transition-colors hover:text-shine"
                 >
-                  {/* Hover glow */}
-                  <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-shine/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
-
-                  <div className="relative z-10 flex items-start justify-between gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-shine/30 bg-shine/10 text-shine transition-colors group-hover:bg-shine group-hover:text-black">
-                      <Icon width={26} height={26} />
+                  <div className="flex items-center gap-6">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-chrome/60">
+                      {String(featured.length + i + 1).padStart(2, "0")}
                     </span>
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-shine/70">
-                      0{i + 1} / 0{services.length}
+                    <span className="text-lg font-semibold tracking-tight text-white transition-colors group-hover:text-shine sm:text-2xl">
+                      {s.title}
                     </span>
                   </div>
-
-                  <h3 className="relative z-10 mt-5 text-xl font-bold leading-snug tracking-tight">
-                    {service.title}
-                  </h3>
-                  <p className="relative z-10 mt-2 line-clamp-3 text-sm leading-relaxed text-slate-muted">
-                    {service.blurb}
-                  </p>
-
-                  <div className="relative z-10 mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-muted">
-                    <span className="rounded-full border border-white/10 px-2.5 py-1">
-                      {service.duration}
-                    </span>
-                    {service.priceLocked && (
-                      <span className="rounded-full border border-shine/40 bg-shine/10 px-2.5 py-1 font-semibold text-shine">
-                        Confirmed price
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="relative z-10 mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-5">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-wider text-slate-muted">
-                        From
-                      </p>
-                      <p className="mt-0.5 font-semibold text-shine">{service.price}</p>
-                    </div>
-                    <span className="text-sm font-semibold text-white transition-all group-hover:translate-x-1 group-hover:text-shine">
-                      Learn more →
-                    </span>
-                  </div>
+                  <span className="hidden text-xs uppercase tracking-widest text-chrome group-hover:text-shine sm:inline">
+                    {s.duration}
+                  </span>
+                  <span className="text-shine transition-transform duration-300 group-hover:translate-x-2">
+                    →
+                  </span>
                 </Link>
-              </Tilt>
-            </Reveal>
-          );
-        })}
-      </div>
+              </Reveal>
+            ))}
+          </ul>
 
-      <Reveal
-        delay={0.15}
-        className="mt-14 flex flex-col items-center gap-5 text-center"
-      >
-        <p className="max-w-xl text-sm text-slate-muted sm:text-base">
-          Not sure which package fits your car? Tell us about your vehicle and
-          we&apos;ll recommend the right detail — usually within the hour.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Magnetic>
-            <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-              Book a Detail
-            </Button>
-          </Magnetic>
-          <Magnetic strength={6}>
-            <Button href="/packages" variant="secondary" size="lg">
-              See packages
-            </Button>
-          </Magnetic>
-        </div>
-      </Reveal>
-    </Section>
+          <Reveal delay={0.1} className="mt-14 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-md text-sm leading-relaxed text-chrome">
+              Need something we haven&apos;t listed? Tell us about the car and
+              we&apos;ll build a quote — usually within the hour.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Magnetic>
+                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
+                  Book a Detail
+                </Button>
+              </Magnetic>
+              <Magnetic strength={6}>
+                <Button href="/services" variant="secondary">
+                  View All Services
+                </Button>
+              </Magnetic>
+            </div>
+          </Reveal>
+        </Container>
+      </div>
+    </section>
   );
 }

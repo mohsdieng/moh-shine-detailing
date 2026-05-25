@@ -3,21 +3,31 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "reac
 type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
+/**
+ * Luxury-leaning button.
+ *
+ * - Square-corner rounded-sm rather than pill — feels editorial / automotive.
+ * - Restrained hover: subtle background/border change + arrow nudge, no bounce.
+ * - Primary: solid shine blue → darker on hover.
+ * - Secondary: thin chrome border → fills with shine on hover.
+ * - Ghost: text + arrow only.
+ */
 const variants: Record<Variant, string> = {
   primary:
-    "bg-shine text-black hover:bg-shine-400 shadow-[0_0_0_0_rgba(56,182,255,0.5)] hover:shadow-[0_8px_30px_-6px_rgba(56,182,255,0.6)]",
+    "bg-shine text-black hover:bg-shine-400",
   secondary:
-    "border border-white/25 text-white hover:border-shine hover:text-shine bg-transparent",
-  ghost: "text-white/80 hover:text-white bg-transparent",
+    "border border-chrome/30 text-white hover:border-shine hover:text-shine bg-transparent",
+  ghost:
+    "text-white/80 hover:text-white bg-transparent",
 };
 
 const sizes: Record<Size, string> = {
-  md: "px-5 py-2.5 text-sm",
-  lg: "px-7 py-3.5 text-base",
+  md: "px-5 py-2.5 text-[13px]",
+  lg: "px-7 py-3.5 text-sm",
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-wide transition-all duration-300 ease-out will-change-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none";
+  "group inline-flex items-center justify-center gap-2.5 rounded-sm font-semibold uppercase tracking-[0.16em] transition-all duration-300 ease-out will-change-transform focus-visible:outline-none";
 
 type CommonProps = {
   variant?: Variant;
@@ -38,7 +48,7 @@ type ButtonAsLink = CommonProps &
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-/** Pill button rendering as <a> when `href` is provided, else <button>. */
+/** Renders as <a> when `href` is provided, else <button>. */
 export function Button({
   variant = "primary",
   size = "md",
