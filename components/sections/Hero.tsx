@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useReducedMotion,
@@ -12,6 +12,10 @@ import { Container } from "../ui/Container";
 import { Magnetic } from "../anim/Magnetic";
 import { SplitText } from "../anim/SplitText";
 import { site } from "@/lib/site";
+
+/** Path conventions — drop the files here to enable the hero video. */
+const HERO_VIDEO_MP4 = "/videos/hero.mp4";
+const HERO_POSTER = "/posters/hero.jpg";
 
 /**
  * Hero — luxury automotive launch-page style.
@@ -25,7 +29,35 @@ import { site } from "@/lib/site";
  */
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const reduce = useReducedMotion();
+
+  // Hero video state — auto-tries the .mp4, swaps to the CSS cinematic bg
+  // if it errors (file missing, codec unsupported, slow connection).
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
+
+  useEffect(() => {
+    if (reduce) return;
+    const video = videoRef.current;
+    if (!video) return;
+    // Defer briefly so we don't fight first-paint priority; respects whichever
+    // idle-callback API the browser exposes, falling back to a short timeout.
+    const start = () => {
+      if (video.readyState === 0) video.load();
+      void video.play().catch(() => {});
+    };
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (typeof w.requestIdleCallback === "function") {
+      const id = w.requestIdleCallback(start);
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const id = window.setTimeout(start, 400);
+    return () => window.clearTimeout(id);
+  }, [reduce]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -37,13 +69,14 @@ export function Hero() {
   const fade = useTransform(scrollYProgress, [0, 0.85], [1, reduce ? 1 : 0]);
 
   const ease = [0.22, 1, 0.36, 1] as const;
+  const videoActive = !reduce && !videoFailed;
 
   return (
     <section
       ref={ref}
       className="relative flex min-h-[100svh] items-end overflow-hidden bg-navy-950 pb-20 pt-28 sm:items-center sm:pb-0 sm:pt-0"
     >
-      {/* Layer 1 — cinematic background */}
+      {/* Layer 1 — cinematic CSS background (also the video fallback) */}
       <motion.div
         aria-hidden="true"
         style={{ y: bgY }}
@@ -60,6 +93,38 @@ export function Hero() {
         {/* Bottom vignette */}
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black via-black/60 to-transparent" />
       </motion.div>
+
+      {/* Layer 1b — full-bleed cinematic video, fades in over Layer 1 when
+          it starts playing. If the file is missing or the codec is rejected,
+          the CSS bg above remains visible — zero broken state. */}
+      {videoActive && (
+        <video
+          ref={videoRef}
+          poster={HERO_POSTER}
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="none"
+          onError={() => setVideoFailed(true)}
+          onPlaying={() => setVideoStarted(true)}
+          aria-hidden="true"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-out ${
+            videoStarted ? "opacity-70" : "opacity-0"
+          }`}
+        >
+          <source src={HERO_VIDEO_MP4} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Layer 1c — dark gradient + vignette ON TOP of the video so the
+          headline stays readable regardless of footage exposure. */}
+      {videoActive && videoStarted && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/85"
+        />
+      )}
 
       {/* Layer 2 — oversized faded MS wordmark, light parallax */}
       <motion.div

@@ -15,6 +15,13 @@ type CinematicPanelProps = {
   tag?: string;
   /** Optional child overlay (e.g. before/after slider) replaces the icon. */
   children?: ReactNode;
+  /**
+   * When true, strips the hairline frame, corner ticks, tag and watermark
+   * so the panel can be nested inside another framed component (e.g. used
+   * as the `fallback` of a CinematicVideo). The aspect / border / bg layers
+   * remain.
+   */
+  bare?: boolean;
   className?: string;
 };
 
@@ -29,6 +36,7 @@ export function CinematicPanel({
   icon,
   tag,
   children,
+  bare = false,
   className = "",
 }: CinematicPanelProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -52,11 +60,15 @@ export function CinematicPanel({
 
   const Icon = icon ? serviceIcons[icon] : null;
 
+  // When bare-mode, the panel is being embedded inside another framed
+  // component — drop its own aspect / border so it stretches to fill that
+  // wrapper instead.
+  const wrapperClasses = bare
+    ? `relative h-full w-full overflow-hidden ${className}`
+    : `relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-chrome-line bg-navy-900 sm:aspect-[5/6] md:aspect-[4/5] ${className}`;
+
   return (
-    <div
-      ref={ref}
-      className={`relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-chrome-line bg-navy-900 sm:aspect-[5/6] md:aspect-[4/5] ${className}`}
-    >
+    <div ref={ref} className={wrapperClasses}>
       {/* Layered background — base gradient + studio key light + vignette */}
       <div className="absolute inset-0 bg-gradient-to-br from-navy-700 via-navy-900 to-black" />
       <motion.div
@@ -89,26 +101,30 @@ export function CinematicPanel({
 
       {children}
 
-      {/* Hairline frame inset */}
-      <div className="pointer-events-none absolute inset-3 rounded-sm border border-chrome-line" aria-hidden="true" />
+      {!bare && (
+        <>
+          {/* Hairline frame inset */}
+          <div className="pointer-events-none absolute inset-3 rounded-sm border border-chrome-line" aria-hidden="true" />
 
-      {/* Corner accents */}
-      <CornerTick className="left-4 top-4" />
-      <CornerTick className="right-4 top-4" rotate={90} />
-      <CornerTick className="left-4 bottom-4" rotate={-90} />
-      <CornerTick className="right-4 bottom-4" rotate={180} />
+          {/* Corner accents */}
+          <CornerTick className="left-4 top-4" />
+          <CornerTick className="right-4 top-4" rotate={90} />
+          <CornerTick className="left-4 bottom-4" rotate={-90} />
+          <CornerTick className="right-4 bottom-4" rotate={180} />
 
-      {/* Tag */}
-      {tag && (
-        <span className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-widest text-chrome">
-          {tag}
-        </span>
+          {/* Tag */}
+          {tag && (
+            <span className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-widest text-chrome">
+              {tag}
+            </span>
+          )}
+
+          {/* Small brand watermark, bottom-right corner */}
+          <span className="absolute bottom-6 right-6 font-mono text-[10px] uppercase tracking-widest text-chrome/60">
+            MS / Detailing
+          </span>
+        </>
       )}
-
-      {/* Small brand watermark, bottom-right corner */}
-      <span className="absolute bottom-6 right-6 font-mono text-[10px] uppercase tracking-widest text-chrome/60">
-        MS / Detailing
-      </span>
     </div>
   );
 }

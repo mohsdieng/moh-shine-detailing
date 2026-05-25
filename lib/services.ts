@@ -42,6 +42,15 @@ export type Service = {
   tiers?: { sedan: string; suv: string; truck: string };
   icon: ServiceIconKey;
   addOns?: string[];
+  /**
+   * Optional cinematic media. Path conventions:
+   *   video : /public/videos/<slug>.mp4
+   *   poster: /public/posters/<slug>.jpg
+   * If the file is missing at runtime, the CinematicVideo component falls
+   * back gracefully to the CSS panel — so it's safe to keep these populated
+   * even before the assets are delivered.
+   */
+  media?: { video?: string; poster?: string };
   /** Page-level SEO. */
   seoTitle: string;
   seoDescription: string;
@@ -85,6 +94,7 @@ export const services: Service[] = [
     priceLocked: true,
     tiers: { sedan: "$50", suv: "$65", truck: "$65" },
     icon: "wash",
+    media: { video: "/videos/wash-and-wax.mp4", poster: "/posters/wash-and-wax.jpg" },
     addOns: ["Bug & tar removal", "Wheel face deep clean", "Glass water-spot removal"],
     seoTitle: "Mobile Wash & Wax in Raleigh & Durham, NC — from $50",
     seoDescription:
@@ -127,6 +137,7 @@ export const services: Service[] = [
     price: "Contact for quote",
     priceLocked: false,
     icon: "sparkle",
+    media: { video: "/videos/exterior-detail.mp4", poster: "/posters/exterior-detail.jpg" },
     addOns: ["Headlight restoration", "Engine bay clean", "Plastic trim restoration"],
     seoTitle: "Exterior Car Detailing in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -169,6 +180,7 @@ export const services: Service[] = [
     price: "from $120",
     priceLocked: false,
     icon: "interior",
+    media: { video: "/videos/interior-detail.mp4", poster: "/posters/interior-detail.jpg" },
     addOns: ["Pet hair extraction", "Stain spot treatment", "Ozone odor removal"],
     seoTitle: "Interior Car Detailing in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -210,6 +222,7 @@ export const services: Service[] = [
     price: "from $200",
     priceLocked: false,
     icon: "shine",
+    media: { video: "/videos/full-detail.mp4", poster: "/posters/full-detail.jpg" },
     addOns: ["Paint correction add-on", "Headlight restoration", "Engine bay detail"],
     seoTitle: "Full Car Detail in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -251,6 +264,7 @@ export const services: Service[] = [
     price: "from $350",
     priceLocked: false,
     icon: "shield",
+    media: { video: "/videos/paint-correction.mp4", poster: "/posters/paint-correction.jpg" },
     addOns: ["1-year ceramic coating", "2-year ceramic coating", "Trim restoration"],
     seoTitle: "Paint Correction in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -292,6 +306,7 @@ export const services: Service[] = [
     price: "Contact for quote",
     priceLocked: false,
     icon: "diamond",
+    media: { video: "/videos/ceramic-coating.mp4", poster: "/posters/ceramic-coating.jpg" },
     addOns: ["Wheel face coating", "Glass coating (rain repellent)", "Trim coating"],
     seoTitle: "Ceramic Coating in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -331,6 +346,7 @@ export const services: Service[] = [
     price: "Contact for quote",
     priceLocked: false,
     icon: "headlight",
+    media: { video: "/videos/headlight-restoration.mp4", poster: "/posters/headlight-restoration.jpg" },
     addOns: ["Tail-light restoration", "Fog-light restoration"],
     seoTitle: "Headlight Restoration in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -370,6 +386,7 @@ export const services: Service[] = [
     price: "Contact for quote",
     priceLocked: false,
     icon: "leaf",
+    media: { video: "/videos/odor-removal.mp4", poster: "/posters/odor-removal.jpg" },
     addOns: ["Full interior detail combo", "Pet hair extraction", "Mildew treatment"],
     seoTitle: "Car Odor Removal in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:
@@ -410,6 +427,7 @@ export const services: Service[] = [
     price: "Contact for quote",
     priceLocked: false,
     icon: "engine",
+    media: { video: "/videos/engine-bay-cleaning.mp4", poster: "/posters/engine-bay-cleaning.jpg" },
     addOns: ["Underbody rinse (where accessible)", "Battery terminal clean & protect"],
     seoTitle: "Engine Bay Cleaning in Raleigh & Durham, NC | Moh's Shine",
     seoDescription:

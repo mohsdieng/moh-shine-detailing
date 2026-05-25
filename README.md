@@ -111,6 +111,91 @@ Placeholder before/after images live in `public/gallery/` as lightweight SVGs
 
 ---
 
+## Premium video & poster assets
+
+Hero + service Feature sections will automatically render a cinematic looping
+video when the matching file exists. If it doesn't, they gracefully fall back
+to the CSS cinematic panel (with the brand icon as focal element) — **no broken
+state**, ever.
+
+### Where to drop the files
+
+```
+public/
+  videos/
+    hero.mp4
+    wash-and-wax.mp4
+    exterior-detail.mp4
+    interior-detail.mp4
+    full-detail.mp4
+    paint-correction.mp4
+    ceramic-coating.mp4
+    headlight-restoration.mp4
+    odor-removal.mp4
+    engine-bay-cleaning.mp4
+  posters/
+    hero.jpg
+    wash-and-wax.jpg
+    exterior-detail.jpg
+    interior-detail.jpg
+    full-detail.jpg
+    paint-correction.jpg
+    ceramic-coating.jpg
+    headlight-restoration.jpg
+    odor-removal.jpg
+    engine-bay-cleaning.jpg
+```
+
+The exact filenames are wired up in [`lib/services.ts`](lib/services.ts) (the
+`media` field on each service) and at the top of
+[`components/sections/Hero.tsx`](components/sections/Hero.tsx) for the hero video.
+
+### Recommended specs (luxury feel, fast load)
+
+- **Resolution**: 1920 × 1080 (16:9). Feature panels render at portrait
+  aspect so they'll crop centrally — frame the action in the middle.
+- **Duration**: 8 – 15 seconds, seamless loop. The video is muted, looped,
+  autoplaying — so the user shouldn't notice the loop point.
+- **Format**: `.mp4` with the **H.264** video codec and **AAC** audio
+  (audio is muted but some codecs misbehave without an audio track).
+- **Bitrate**: target ~2 – 4 Mbps. Don't ship a 50 MB clip.
+- **No sound**, no logos baked-in, no captions — those are layered over
+  via the component overlay.
+
+#### One-liner with `ffmpeg`
+
+```bash
+# Compress a source clip to 1080p, ~3 Mbps, web-optimized
+ffmpeg -i source.mov \
+  -vf "scale='min(1920,iw)':-2" \
+  -c:v libx264 -profile:v high -preset slow -crf 23 \
+  -movflags +faststart \
+  -an \
+  hero.mp4
+```
+
+### Poster images
+
+- **Resolution**: same as the video (1920 × 1080). Compress to JPG at
+  quality 75-82.
+- **Purpose**: shown instantly while the video loads, and as the
+  permanent visual if the video errors out.
+- If you only have a still photo and no video, drop the poster alone —
+  the component will skip the `<video>` element entirely and just render
+  the photo + overlay.
+
+### Performance
+
+- Videos load **only when their section enters the viewport** (driven by
+  `IntersectionObserver` inside `CinematicVideo`).
+- `preload="none"` keeps the initial page load light.
+- A dark gradient is layered on top of every video/poster so headlines and
+  body copy stay readable regardless of footage exposure.
+- Users with `prefers-reduced-motion` see the poster only — the video never
+  auto-plays.
+
+---
+
 ## SEO features included
 
 - **Metadata API** per page: unique titles, descriptions, canonical URLs, Open Graph + Twitter cards (`lib/seo.ts`).
