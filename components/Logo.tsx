@@ -27,8 +27,10 @@ type LogoProps = {
  *     monogram so the header is never visually broken.
  *  3. Once the bitmap loads, swap it in seamlessly.
  *
- * This avoids the "broken image / alt-text flash" you get if you just render
- * an <img> tag pointing at a file that doesn't exist yet.
+ * Sizing: the container is expected to set a `height` (e.g. h-12 / h-14).
+ * The logo always honours that height and lets width auto-scale, with a
+ * generous max-width cap to keep wide badges from blowing past their slot
+ * in narrow headers / footers.
  *
  * Drop the new brand bitmap at /public/logo.png to enable it site-wide.
  */
@@ -55,7 +57,16 @@ export function Logo({
         src="/logo.png"
         alt={title}
         className={className}
-        style={{ height: "100%", width: "auto", objectFit: "contain" }}
+        style={{
+          height: "100%",
+          width: "auto",
+          maxWidth: "180px",
+          objectFit: "contain",
+          // Tiny luminance boost on dark backgrounds so the chrome lettering
+          // reads cleanly without looking washed out.
+          filter: "drop-shadow(0 0 1px rgba(0,0,0,0.4))",
+        }}
+        draggable={false}
       />
     );
   }

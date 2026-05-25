@@ -67,7 +67,7 @@ export function IntroLoader() {
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="h-16"
+              className="h-20 sm:h-24"
             >
               <Logo variant="dark" />
             </motion.div>

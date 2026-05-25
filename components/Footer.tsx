@@ -52,7 +52,7 @@ export function Footer() {
           <Link
             href="/"
             aria-label={`${site.name} — home`}
-            className="inline-flex h-12"
+            className="inline-flex h-14"
           >
             <Logo variant="dark" className="h-full" />
           </Link>

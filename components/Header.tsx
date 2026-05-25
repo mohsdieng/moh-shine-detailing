@@ -101,7 +101,7 @@ export function Header() {
           <Link
             href="/"
             aria-label={`${site.name} — home`}
-            className="flex h-10 items-center sm:h-12"
+            className="flex h-11 items-center sm:h-14"
             onClick={() => setOpen(false)}
           >
             <Logo variant="dark" className="h-full" />
