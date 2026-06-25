@@ -1,6 +1,7 @@
 import { site } from "@/lib/site";
 import { services } from "@/lib/services";
 import { publishedCities, publishedCityServicePairs } from "@/lib/cities";
+import { posts } from "@/lib/blog";
 
 /**
  * Hand-written sitemap route handler.
@@ -17,6 +18,7 @@ export function GET() {
     { path: "", priority: "1.0" },
     { path: "/services", priority: "0.9" },
     { path: "/locations", priority: "0.9" },
+    { path: "/blog", priority: "0.8" },
     { path: "/packages", priority: "0.8" },
     { path: "/gallery", priority: "0.7" },
     { path: "/reviews", priority: "0.7" },
@@ -39,11 +41,18 @@ export function GET() {
     priority: "0.8",
   }));
 
+  // Blog articles.
+  const blogRoutes = posts.map((p) => ({
+    path: `/blog/${p.slug}`,
+    priority: "0.6",
+  }));
+
   const routes = [
     ...baseRoutes,
     ...serviceRoutes,
     ...cityHubRoutes,
     ...cityServiceRoutes,
+    ...blogRoutes,
   ];
 
   const urls = routes

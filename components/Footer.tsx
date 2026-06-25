@@ -15,6 +15,7 @@ const explore = [
   { label: "Services", href: "/services" },
   { label: "Packages", href: "/packages" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
   { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" },
 ];
