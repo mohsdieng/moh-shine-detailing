@@ -1,26 +1,43 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState, useCallback } from "react";
+import type { MediaSource } from "@/lib/media";
+
+/**
+ * Normalise a MediaSource | string into a MediaSource object.
+ * Plain strings are treated as local paths (no temp fallback).
+ */
+const normalise = (m: MediaSource | string): MediaSource =>
+  typeof m === "string" ? { local: m } : m;
 
 type BeforeAfterProps = {
-  before: string;
-  after: string;
+  /** "Before" image — MediaSource or plain local path string. */
+  before: MediaSource | string;
+  /** "After" image — MediaSource or plain local path string. */
+  after: MediaSource | string;
   alt: string;
   className?: string;
   /** Initial divider position (0..100). */
   initial?: number;
   /**
-   * Optional CSS `filter` value applied only to the image layers — useful for
+   * Optional CSS `filter` applied only to the image layers — useful for
    * giving placeholder pairs visual variety (e.g. `"hue-rotate(35deg)"`).
+   * When a GalleryItem has no real "before" photo, Gallery.tsx passes the
+   * same "after" source for both sides and sets this to a dark/desaturated
+   * filter so the left half reads as a convincing un-detailed state.
    */
   filter?: string;
 };
 
 /**
  * Drag/hover-to-reveal before/after comparison slider.
- * Pointer events handle both mouse and touch; arrow keys move the slider
- * for keyboard users (focus the divider handle).
+ *
+ * Both `before` and `after` accept a `MediaSource` object `{ local, temp }`
+ * or a plain string (treated as a local path). Uses plain `<img>` tags with
+ * `onError` handlers so the local → temp fallback chain works client-side.
+ *
+ * Pointer events handle mouse and touch; arrow keys move the slider for
+ * keyboard users.
  */
 export function BeforeAfter({
   before,
@@ -30,6 +47,45 @@ export function BeforeAfter({
   initial = 50,
   filter,
 }: BeforeAfterProps) {
+  const bSrc = normalise(before);
+  const aSrc = normalise(after);
+
+  /* ---- image src state with local → temp fallback ---- */
+  const [beforeSrc, setBeforeSrc] = useState(bSrc.local ?? bSrc.temp ?? "");
+  const [beforeTriedTemp, setBeforeTriedTemp] = useState(!bSrc.local);
+
+  const [afterSrc, setAfterSrc] = useState(aSrc.local ?? aSrc.temp ?? "");
+  const [afterTriedTemp, setAfterTriedTemp] = useState(!aSrc.local);
+
+  const onBeforeError = () => {
+    if (!beforeTriedTemp && bSrc.temp) {
+      setBeforeSrc(bSrc.temp);
+      setBeforeTriedTemp(true);
+    }
+  };
+
+  const onAfterError = () => {
+    if (!afterTriedTemp && aSrc.temp) {
+      setAfterSrc(aSrc.temp);
+      setAfterTriedTemp(true);
+    }
+  };
+
+  // A 404 can fire before React hydrates and attaches onError (especially for
+  // images the browser begins fetching close to the viewport). Re-check on
+  // mount: if an image already failed, swap it to the temp source now.
+  const beforeImgRef = useRef<HTMLImageElement>(null);
+  const afterImgRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const b = beforeImgRef.current;
+    if (b && b.complete && b.naturalWidth === 0) onBeforeError();
+    const a = afterImgRef.current;
+    if (a && a.complete && a.naturalWidth === 0) onAfterError();
+    // Run once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ---- slider logic (unchanged) ---- */
   const wrapRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(initial);
   const [dragging, setDragging] = useState(false);
@@ -68,38 +124,43 @@ export function BeforeAfter({
       }}
       onPointerCancel={() => setDragging(false)}
     >
-      {/* Image layers wrapped together so the optional filter applies only here. */}
+      {/* Image layers — optional CSS filter scoped to this wrapper. */}
       <div className="absolute inset-0" style={filter ? { filter } : undefined}>
         {/* Base layer: AFTER (full image). */}
-        <Image
-          src={after}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={afterImgRef}
+          src={afterSrc}
           alt={`After: ${alt}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
-          priority={false}
+          loading="lazy"
+          onError={onAfterError}
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable={false}
         />
-        {/* Top layer: BEFORE, clipped from the right based on pos. */}
+        {/* Top layer: BEFORE, clipped right based on slider position. */}
         <div
           className="absolute inset-0"
           style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
           aria-hidden="true"
         >
-          <Image
-            src={before}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={beforeImgRef}
+            src={beforeSrc}
             alt=""
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
+            loading="lazy"
+            onError={onBeforeError}
+            className="absolute inset-0 h-full w-full object-cover"
+            draggable={false}
           />
         </div>
       </div>
 
       {/* Labels */}
-      <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
+      <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
         Before
       </span>
-      <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-shine/95 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-black backdrop-blur">
+      <span className="pointer-events-none absolute right-3 top-3 z-10 rounded-full bg-shine/95 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-black backdrop-blur">
         After
       </span>
 
@@ -116,7 +177,17 @@ export function BeforeAfter({
         style={{ left: `${pos}%` }}
       >
         <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-shine bg-black text-shine shadow-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="m9 6-6 6 6 6M15 6l6 6-6 6" />
           </svg>
         </span>

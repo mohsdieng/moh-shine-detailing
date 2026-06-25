@@ -2,21 +2,19 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
+import type { MediaSource } from "@/lib/media";
 
 type CinematicVideoProps = {
   /**
-   * Path to the primary video file under /public/videos/. Optional —
-   * the component degrades gracefully to the poster image, then to the
-   * `fallback` child if neither is available.
+   * Video source. Accepts:
+   *   - a `MediaSource` object: `{ local: '/videos/x.mp4', temp: '...' }`
+   *   - a plain string (treated as local)
+   *   - undefined (skips video entirely)
+   * The component tries local first; if it fails to load it swaps to temp.
    */
-  videoSrc?: string;
-  /** Optional secondary source (e.g. .webm next to .mp4) for broader codec support. */
-  videoSrcWebm?: string;
-  /**
-   * Path to a poster JPG/PNG under /public/posters/. Shown until the video
-   * is ready to play, and as a graceful fallback if the video errors.
-   */
-  posterSrc?: string;
+  video?: MediaSource | string;
+  /** Poster image — same dual-source contract as `video`. */
+  poster?: MediaSource | string;
   /** Optional tag rendered in the top-left corner of the frame. */
   tag?: string;
   /** Optional accessible description for the visual. */
@@ -32,23 +30,29 @@ type CinematicVideoProps = {
   children?: ReactNode;
 };
 
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+const normalise = (m: MediaSource | string | undefined): MediaSource =>
+  typeof m === "string" ? { local: m } : (m ?? {});
+
 /**
  * Cinematic video / poster panel.
  *
- * Behaviour:
- *  - Lazy-loads the video only once the container enters the viewport.
- *  - Plays muted, looped, inline — required for mobile autoplay.
- *  - Renders the poster behind the video so first paint is instant.
- *  - If the video errors (file missing, codec unsupported), keeps the
- *    poster. If the poster also errors, renders the `fallback` child.
- *  - Respects prefers-reduced-motion (shows poster only, never plays).
- *  - Always renders a dark gradient overlay so any text over the panel
- *    stays readable on light footage.
+ * Resolution order — local first, then temp, then nothing:
+ *   1. Try the local path (`poster.local`, `video.local`).
+ *   2. On 404 / error, swap to the temp URL.
+ *   3. If both fail, render the caller-supplied `fallback` (typically the
+ *      CinematicPanel with the brand icon).
+ *
+ * Lazy-loads via IntersectionObserver, plays muted/looped/inline so mobile
+ * browsers honour autoplay, and always layers a dark gradient overlay so
+ * text reads cleanly over the footage.
  */
 export function CinematicVideo({
-  videoSrc,
-  videoSrcWebm,
-  posterSrc,
+  video,
+  poster,
   tag,
   alt = "",
   fallback,
@@ -62,44 +66,87 @@ export function CinematicVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const inView = useInView(containerRef, { margin: "150px" });
 
-  const [videoFailed, setVideoFailed] = useState(!videoSrc);
-  const [posterFailed, setPosterFailed] = useState(!posterSrc);
+  const v = normalise(video);
+  const p = normalise(poster);
+
+  /* --------------------- Poster src state ------------------------ */
+  // Start on whichever source we have, preferring local. If onError fires
+  // and we have a temp left to try, swap to it. After that, give up.
+  const initialPoster = p.local ?? p.temp;
+  const [posterSrc, setPosterSrc] = useState<string | undefined>(initialPoster);
+  const [posterTriedTemp, setPosterTriedTemp] = useState<boolean>(!p.local);
+  const [posterFailed, setPosterFailed] = useState<boolean>(!initialPoster);
+
+  const onPosterError = () => {
+    if (!posterTriedTemp && p.temp) {
+      setPosterSrc(p.temp);
+      setPosterTriedTemp(true);
+    } else {
+      setPosterFailed(true);
+    }
+  };
+
+  // The poster 404 can fire before React hydrates and attaches onError.
+  // Re-check on mount: if it already failed, run the fallback now.
+  const posterImgRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const img = posterImgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) onPosterError();
+    // Run once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* --------------------- Video src state ------------------------- */
+  const initialVideo = v.local ?? v.temp;
+  const [videoSrc, setVideoSrc] = useState<string | undefined>(initialVideo);
+  const [videoTriedTemp, setVideoTriedTemp] = useState<boolean>(!v.local);
+  const [videoFailed, setVideoFailed] = useState<boolean>(!initialVideo);
   const [videoStarted, setVideoStarted] = useState(false);
+
+  const onVideoError = () => {
+    if (!videoTriedTemp && v.temp) {
+      setVideoSrc(v.temp);
+      setVideoTriedTemp(true);
+      // Force reload after src swap
+      requestAnimationFrame(() => videoRef.current?.load());
+    } else {
+      setVideoFailed(true);
+    }
+  };
 
   const allowVideo = !!videoSrc && !videoFailed && !reduce;
   const hasPoster = !!posterSrc && !posterFailed;
   const renderFallback = !allowVideo && !hasPoster;
 
-  // Lazy load: attach src + try to play only after the panel scrolls into view.
+  /* --------------------- Lazy play ------------------------------- */
   useEffect(() => {
     if (!allowVideo || !inView) return;
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.readyState === 0) video.load();
-    // Calling play() may throw on stricter browsers — swallow it; the poster
-    // continues to be visible if autoplay is rejected.
-    void video.play().catch(() => {});
-  }, [allowVideo, inView]);
+    const el = videoRef.current;
+    if (!el) return;
+    if (el.readyState === 0) el.load();
+    void el.play().catch(() => {});
+  }, [allowVideo, inView, videoSrc]);
 
   return (
     <div
       ref={containerRef}
       className={`relative overflow-hidden rounded-sm border border-chrome-line bg-navy-900 ${className}`}
     >
-      {/* Poster — always renders behind so first paint is instant. */}
+      {/* Poster — instant first paint underneath the video. */}
       {hasPoster && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          ref={posterImgRef}
           src={posterSrc}
           alt={alt}
           loading="lazy"
-          onError={() => setPosterFailed(true)}
+          onError={onPosterError}
           className="absolute inset-0 h-full w-full object-cover"
           draggable={false}
         />
       )}
 
-      {/* Video — fades in once it's playing. */}
+      {/* Video — fades in once playing. */}
       {allowVideo && (
         <video
           ref={videoRef}
@@ -109,30 +156,29 @@ export function CinematicVideo({
           playsInline
           autoPlay
           preload="none"
-          onError={() => setVideoFailed(true)}
+          onError={onVideoError}
           onPlaying={() => setVideoStarted(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             videoStarted ? "opacity-100" : "opacity-0"
           }`}
           aria-label={alt}
         >
-          {videoSrcWebm && <source src={videoSrcWebm} type="video/webm" />}
-          {videoSrc && <source src={videoSrc} type="video/mp4" />}
+          <source src={videoSrc} type="video/mp4" />
         </video>
       )}
 
-      {/* Fallback (CSS cinematic panel, etc) when no media present at all. */}
+      {/* CSS fallback when no media of any kind resolves. */}
       {renderFallback && fallback}
 
-      {/* Dark gradient overlay — readability for any text over the panel. */}
+      {/* Dark gradient overlay — text readability over any footage. */}
       {!noOverlay && (allowVideo || hasPoster) && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/40 to-black/80"
+          className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/80"
         />
       )}
 
-      {/* Hairline frame + corner accents — pure luxury chrome detail. */}
+      {/* Luxury frame + corner accents. */}
       {!bare && (
         <>
           <div
@@ -158,10 +204,8 @@ export function CinematicVideo({
         </span>
       )}
 
-      {/* Caller content (e.g. play indicator, captions) above everything */}
       {children && <div className="relative z-20">{children}</div>}
 
-      {/* Subtle "playing" indicator (only when video is rolling) */}
       {videoStarted && !bare && (
         <motion.span
           initial={{ opacity: 0 }}

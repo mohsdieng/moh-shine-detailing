@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Container } from "../ui/Container";
 import { CinematicPanel } from "../anim/CinematicPanel";
 import { CinematicVideo } from "../anim/CinematicVideo";
+import { mediaFor } from "@/lib/media";
 import type { Service } from "@/lib/services";
 
 type FeatureProps = {
@@ -29,6 +30,7 @@ type FeatureProps = {
 export function Feature({ service, index, total, align = "left", href }: FeatureProps) {
   const reduce = useReducedMotion();
   const detailHref = href ?? `/services/${service.slug}`;
+  const m = mediaFor(service.slug);
   const tag = `${String(index).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
 
   // Visual column order — swaps based on alignment.
@@ -54,8 +56,8 @@ export function Feature({ service, index, total, align = "left", href }: Feature
               instead so the layout never feels empty. */}
           <motion.div {...fadeIn} className={visualClasses}>
             <CinematicVideo
-              videoSrc={service.media?.video}
-              posterSrc={service.media?.poster}
+              video={m.video}
+              poster={m.poster}
               tag={service.shortTitle.toUpperCase()}
               alt={`${service.title} — premium mobile detailing in Raleigh-Durham`}
               className="aspect-[4/5] sm:aspect-[5/6] md:aspect-[4/5]"
