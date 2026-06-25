@@ -9,6 +9,7 @@ import { Button } from "./ui/Button";
 import { Magnetic } from "./anim/Magnetic";
 import { site } from "@/lib/site";
 import { services } from "@/lib/services";
+import { publishedCities } from "@/lib/cities";
 
 type NavLink = {
   label: string;
@@ -23,6 +24,14 @@ const navLinks: NavLink[] = [
     label: "Services",
     href: "/services",
     dropdown: services.map((s) => ({ label: s.shortTitle, href: `/services/${s.slug}` })),
+  },
+  {
+    label: "Areas",
+    href: "/locations",
+    dropdown: publishedCities().map((c) => ({
+      label: c.name,
+      href: `/locations/${c.slug}`,
+    })),
   },
   { label: "Packages", href: "/packages" },
   { label: "Gallery", href: "/gallery" },

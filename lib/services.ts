@@ -130,7 +130,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "sparkle",
     addOns: ["Headlight restoration", "Engine bay clean", "Plastic trim restoration"],
-    seoTitle: "Exterior Car Detailing in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Exterior Car Detailing in Raleigh & Durham, NC",
     seoDescription:
       "Mobile exterior car detailing in Raleigh-Durham. Hand wash, iron decon, clay bar and spray sealant for glass-smooth paint that lasts. Free quote — we come to you.",
     keywords: ["exterior car detailing Raleigh", "exterior detail Durham NC", "clay bar Raleigh"],
@@ -172,7 +172,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "interior",
     addOns: ["Pet hair extraction", "Stain spot treatment", "Ozone odor removal"],
-    seoTitle: "Interior Car Detailing in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Interior Car Detailing in Raleigh & Durham, NC",
     seoDescription:
       "Mobile interior car detailing in Raleigh-Durham. Vacuum, steam, leather conditioning and odor neutralization — your cabin reset to showroom fresh, at your driveway.",
     keywords: ["interior car detailing Raleigh", "interior detail Durham NC", "car interior cleaning Raleigh"],
@@ -213,7 +213,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "shine",
     addOns: ["Paint correction add-on", "Headlight restoration", "Engine bay detail"],
-    seoTitle: "Full Car Detail in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Full Car Detail in Raleigh & Durham, NC",
     seoDescription:
       "Full mobile car detail in Raleigh-Durham — interior, exterior, sealant and inspection in one appointment. Showroom finish, in your driveway. From $200.",
     keywords: ["full car detail Raleigh", "complete car detailing Durham NC", "mobile car detail Raleigh"],
@@ -254,7 +254,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "shield",
     addOns: ["1-year ceramic coating", "2-year ceramic coating", "Trim restoration"],
-    seoTitle: "Paint Correction in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Paint Correction in Raleigh & Durham, NC",
     seoDescription:
       "Professional paint correction in Raleigh-Durham. Multi-stage machine polishing to remove swirls, oxidation and scratches — restores mirror-like gloss to your paint.",
     keywords: ["paint correction Raleigh", "swirl removal Durham NC", "paint polishing Raleigh"],
@@ -295,7 +295,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "diamond",
     addOns: ["Wheel face coating", "Glass coating (rain repellent)", "Trim coating"],
-    seoTitle: "Ceramic Coating in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Ceramic Coating in Raleigh & Durham, NC",
     seoDescription:
       "Professional ceramic coating in Raleigh-Durham. Years of paint protection, hydrophobic shedding and easier washes — applied at your home or office.",
     keywords: ["ceramic coating Raleigh", "ceramic coating Durham NC", "paint protection Raleigh"],
@@ -334,7 +334,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "headlight",
     addOns: ["Tail-light restoration", "Fog-light restoration"],
-    seoTitle: "Headlight Restoration in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Headlight Restoration in Raleigh & Durham, NC",
     seoDescription:
       "Mobile headlight restoration in Raleigh-Durham. Wet-sand and seal cloudy, yellowed headlight lenses for brighter, safer beams — done in your driveway.",
     keywords: ["headlight restoration Raleigh", "cloudy headlights Durham NC", "headlight cleaning Raleigh"],
@@ -373,7 +373,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "leaf",
     addOns: ["Full interior detail combo", "Pet hair extraction", "Mildew treatment"],
-    seoTitle: "Car Odor Removal in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Car Odor Removal in Raleigh & Durham, NC",
     seoDescription:
       "Mobile car odor removal in Raleigh-Durham — smoke, pet, mildew and food smells treated at the source with steam, extraction and ozone. We come to you.",
     keywords: ["car odor removal Raleigh", "smoke smell removal Durham NC", "pet smell car Raleigh"],
@@ -413,7 +413,7 @@ export const services: Service[] = [
     priceLocked: false,
     icon: "engine",
     addOns: ["Underbody rinse (where accessible)", "Battery terminal clean & protect"],
-    seoTitle: "Engine Bay Cleaning in Raleigh & Durham, NC | Moh's Shine",
+    seoTitle: "Engine Bay Cleaning in Raleigh & Durham, NC",
     seoDescription:
       "Mobile engine bay cleaning in Raleigh-Durham — low-pressure degrease, brush, rinse and dress for a factory-fresh look under the hood. Safe, careful, in your driveway.",
     keywords: ["engine bay cleaning Raleigh", "engine bay detail Durham NC", "engine cleaning Raleigh"],

@@ -15,6 +15,7 @@ import { serviceIcons } from "@/components/icons";
 import { JsonLd, breadcrumbSchema, serviceSchema } from "@/components/JsonLd";
 import { Faq } from "@/components/sections/Faq";
 import { mediaFor } from "@/lib/media";
+import { citiesForService, publishedCities } from "@/lib/cities";
 
 /* ---------- Static generation -------------------------------------- */
 
@@ -49,6 +50,10 @@ export default function ServiceDetailPage({
   const Icon = serviceIcons[service.icon];
   const related = services.filter((s) => s.slug !== service.slug).slice(0, 3);
   const m = mediaFor(service.slug);
+  // Cities that publish a dedicated page for this service; fall back to the
+  // city hubs when none do yet, so the internal links are always useful.
+  const serviceCities = citiesForService(service.slug);
+  const linkCities = serviceCities.length > 0 ? serviceCities : publishedCities();
 
   return (
     <>
@@ -355,6 +360,49 @@ export default function ServiceDetailPage({
                 </Reveal>
               );
             })}
+          </div>
+        </Container>
+      </section>
+
+      {/* Available across the Triangle — local internal linking */}
+      <section className="relative border-t border-chrome-line bg-black py-20 sm:py-28">
+        <Container>
+          <Reveal className="mb-10 max-w-2xl">
+            <p className="eyebrow mb-5">Service areas</p>
+            <h2 className="text-balance text-3xl font-bold tracking-tightest sm:text-4xl">
+              {service.title} across the{" "}
+              <span className="text-shine italic">Triangle.</span>
+            </h2>
+            <p className="mt-5 text-base font-light leading-relaxed text-chrome">
+              We bring {service.title.toLowerCase()} to driveways throughout the
+              Raleigh–Durham area. Find it in your city:
+            </p>
+          </Reveal>
+          <div className="flex flex-wrap gap-3">
+            {linkCities.map((c) => {
+              const offersDedicated = c.services.includes(service.slug);
+              const href = offersDedicated
+                ? `/locations/${c.slug}/${service.slug}`
+                : `/locations/${c.slug}`;
+              return (
+                <Link
+                  key={c.slug}
+                  href={href}
+                  className="group inline-flex items-center gap-3 border border-chrome-line bg-black/40 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-shine hover:text-shine"
+                >
+                  {offersDedicated ? `${service.title} in ${c.name}` : `Detailing in ${c.name}`}
+                  <span aria-hidden="true" className="text-shine transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              );
+            })}
+            <Link
+              href="/locations"
+              className="inline-flex items-center gap-2 border border-shine/40 bg-shine/10 px-5 py-3 text-sm font-semibold text-shine transition-colors hover:bg-shine hover:text-black"
+            >
+              All service areas →
+            </Link>
           </div>
         </Container>
       </section>

@@ -1,5 +1,6 @@
 import { site } from "@/lib/site";
 import { services } from "@/lib/services";
+import { publishedCities, publishedCityServicePairs } from "@/lib/cities";
 
 /**
  * Hand-written sitemap route handler.
@@ -15,6 +16,7 @@ export function GET() {
   const baseRoutes = [
     { path: "", priority: "1.0" },
     { path: "/services", priority: "0.9" },
+    { path: "/locations", priority: "0.9" },
     { path: "/packages", priority: "0.8" },
     { path: "/gallery", priority: "0.7" },
     { path: "/reviews", priority: "0.7" },
@@ -27,7 +29,22 @@ export function GET() {
     priority: "0.8",
   }));
 
-  const routes = [...baseRoutes, ...serviceRoutes];
+  // Local landing pages — city hubs (broad) + service × city (specific).
+  const cityHubRoutes = publishedCities().map((c) => ({
+    path: `/locations/${c.slug}`,
+    priority: "0.8",
+  }));
+  const cityServiceRoutes = publishedCityServicePairs().map((p) => ({
+    path: `/locations/${p.city}/${p.service}`,
+    priority: "0.8",
+  }));
+
+  const routes = [
+    ...baseRoutes,
+    ...serviceRoutes,
+    ...cityHubRoutes,
+    ...cityServiceRoutes,
+  ];
 
   const urls = routes
     .map(

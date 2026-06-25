@@ -1,7 +1,7 @@
 import { Section } from "../ui/Section";
 import { Reveal } from "../Reveal";
 import { Accordion } from "../anim/Accordion";
-import { JsonLd } from "../JsonLd";
+import { JsonLd, faqPageSchema } from "../JsonLd";
 import { faqs } from "@/lib/content";
 
 /**
@@ -15,15 +15,7 @@ export function Faq() {
     answer: f.a,
   }));
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
+  const schema = faqPageSchema(faqs);
 
   return (
     <Section

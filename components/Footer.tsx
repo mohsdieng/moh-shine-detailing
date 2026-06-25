@@ -7,6 +7,7 @@ import { Logo } from "./Logo";
 import { Magnetic } from "./anim/Magnetic";
 import { site } from "@/lib/site";
 import { services } from "@/lib/services";
+import { publishedCities } from "@/lib/cities";
 
 const explore = [
   { label: "Home", href: "/" },
@@ -90,6 +91,27 @@ export function Footer() {
                   className="text-slate-muted transition-colors hover:text-shine"
                 >
                   {s.shortTitle}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="mt-8 text-sm font-semibold uppercase tracking-wider text-white">
+            Service Areas
+          </h2>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li>
+              <Link href="/locations" className="text-slate-muted transition-colors hover:text-shine">
+                All service areas
+              </Link>
+            </li>
+            {publishedCities().map((c) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/locations/${c.slug}`}
+                  className="text-slate-muted transition-colors hover:text-shine"
+                >
+                  Detailing in {c.name}
                 </Link>
               </li>
             ))}
