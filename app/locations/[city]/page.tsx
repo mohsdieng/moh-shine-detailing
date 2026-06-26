@@ -19,6 +19,8 @@ import { serviceIcons } from "@/components/icons";
 import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
 import { LocalFaq } from "@/components/locations/LocalFaq";
 import { LocationCta } from "@/components/locations/LocationCta";
+import { FromTheBlog } from "@/components/blog/FromTheBlog";
+import { postsForContext } from "@/lib/blog";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -244,6 +246,8 @@ export default function CityHubPage({ params }: { params: { city: string } }) {
         }
         intro={`Common questions from ${city.name} drivers before they book.`}
       />
+
+      <FromTheBlog posts={postsForContext({ citySlug: city.slug, limit: 3 })} />
 
       <LocationCta
         heading={

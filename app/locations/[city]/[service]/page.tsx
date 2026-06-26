@@ -20,6 +20,8 @@ import { serviceIcons } from "@/components/icons";
 import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
 import { LocalFaq } from "@/components/locations/LocalFaq";
 import { LocationCta } from "@/components/locations/LocationCta";
+import { FromTheBlog } from "@/components/blog/FromTheBlog";
+import { postsForContext } from "@/lib/blog";
 import { JsonLd, breadcrumbSchema, serviceSchema } from "@/components/JsonLd";
 
 /* ---------- Static generation -------------------------------------- */
@@ -329,6 +331,10 @@ export default function CityServicePage({
           </>
         }
         intro={`What ${city.name} drivers ask before booking ${service.title.toLowerCase()}.`}
+      />
+
+      <FromTheBlog
+        posts={postsForContext({ serviceSlug: service.slug, citySlug: city.slug, limit: 3 })}
       />
 
       <LocationCta

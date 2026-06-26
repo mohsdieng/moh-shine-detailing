@@ -659,3 +659,75 @@ export function formatDate(iso: string): string {
     timeZone: "UTC",
   });
 }
+
+/* ------------------------------------------------------------------ */
+/* Contextual selection — money pages → relevant blog posts.          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Maps a service slug to the blog tags that signal topical relevance.
+ * Keep these to genuine topic overlaps — a weak match is worse than none.
+ */
+const serviceTopicTags: Record<string, string[]> = {
+  "ceramic-coating": ["ceramic coating", "paint protection"],
+  "paint-correction": ["paint correction", "polishing", "swirl removal"],
+  "wash-and-wax": ["wax", "maintenance"],
+  "interior-detail": ["maintenance", "car care"],
+  "exterior-detail": ["paint protection", "wax", "maintenance"],
+  "full-detail": ["maintenance", "car care", "car detailing"],
+  // headlight-restoration, odor-removal, engine-bay-cleaning have no dedicated
+  // article yet — they fall back to the broadly-useful evergreen set below.
+};
+
+/**
+ * Broadly-useful articles for any money page. Used to top up when there
+ * aren't enough strong topical matches — cost and convenience are relevant
+ * to every detailing buyer, so these are useful rather than filler.
+ */
+const EVERGREEN_SLUGS = [
+  "car-detailing-cost-raleigh-nc",
+  "why-mobile-detailing-busy-raleigh-drivers",
+  "how-often-should-you-detail-your-car",
+];
+
+const STRONG_SCORE = 3;
+
+/**
+ * Selects the most relevant blog posts for a service and/or city context.
+ *
+ * Strong topical matches come first; if there are fewer than `limit`, we top
+ * up with curated evergreen posts so every money page gets 2–3 genuinely
+ * useful links — never an irrelevant one. Pure slug-string logic (no imports
+ * from services/cities), so it stays dependency-free and SSG-safe.
+ */
+export function postsForContext(opts: {
+  serviceSlug?: string;
+  citySlug?: string;
+  limit?: number;
+}): BlogPost[] {
+  const limit = opts.limit ?? 3;
+  const topicTags = opts.serviceSlug ? serviceTopicTags[opts.serviceSlug] ?? [] : [];
+  const cityWord = opts.citySlug ? opts.citySlug.replace(/-/g, " ") : "";
+
+  const scored = posts.map((p) => {
+    let score = 0;
+    for (const t of topicTags) if (p.tags.includes(t)) score += 3;
+    if (cityWord && p.tags.some((t) => t.toLowerCase() === cityWord)) score += 2;
+    return { p, score };
+  });
+
+  const strong = scored
+    .filter((s) => s.score >= STRONG_SCORE)
+    .sort((a, b) => b.score - a.score || (a.p.datePublished < b.p.datePublished ? 1 : -1))
+    .map((s) => s.p);
+
+  if (strong.length >= limit) return strong.slice(0, limit);
+
+  // Top up with evergreen posts not already selected (order preserved).
+  const chosen = new Set(strong.map((p) => p.slug));
+  const fillers = EVERGREEN_SLUGS.map((slug) => posts.find((p) => p.slug === slug)).filter(
+    (p): p is BlogPost => !!p && !chosen.has(p.slug),
+  );
+
+  return [...strong, ...fillers].slice(0, limit);
+}
