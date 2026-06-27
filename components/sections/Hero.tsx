@@ -8,10 +8,10 @@ import {
   useTransform,
 } from "framer-motion";
 import { Button } from "../ui/Button";
+import { BookButton } from "../ui/BookButton";
 import { Container } from "../ui/Container";
 import { Magnetic } from "../anim/Magnetic";
 import { SplitText } from "../anim/SplitText";
-import { site } from "@/lib/site";
 import { mediaFor } from "@/lib/media";
 
 // Resolve hero media from the central registry.
@@ -259,15 +259,9 @@ export function Hero() {
               </Button>
             </Magnetic>
             <Magnetic strength={8}>
-              <Button
-                href={site.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="secondary"
-                size="lg"
-              >
+              <BookButton variant="secondary" size="lg">
                 Book Now
-              </Button>
+              </BookButton>
             </Magnetic>
           </motion.div>
 

@@ -14,45 +14,61 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-/** LocalBusiness (AutoDetailing) schema describing the whole business. */
+/**
+ * LocalBusiness (AutoDetailing) schema describing the whole business.
+ *
+ * Only confirmed data is emitted — telephone, email, geo, opening hours and
+ * sameAs are included only when set in lib/site.ts, so the structured data
+ * never advertises fake contact info, ratings or hours before launch.
+ */
 export function localBusinessSchema() {
-  return {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "AutoDetailing",
     "@id": `${site.url}/#business`,
     name: site.name,
     description: site.description,
     url: site.url,
-    telephone: site.phone,
-    email: site.email,
     image: `${site.url}/logo.png`,
     logo: `${site.url}/logo.png`,
     priceRange: site.priceRange,
     currenciesAccepted: "USD",
-    paymentAccepted: "Cash, Credit Card",
     areaServed: site.areaServed.map((name) => ({
       "@type": "City",
       name: name.replace(/, NC$/, ""),
     })),
+    // Service-area business — locality/region/country only, no street/postal.
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Raleigh",
-      addressRegion: "NC",
-      addressCountry: "US",
+      addressLocality: site.address.locality,
+      addressRegion: site.address.region,
+      addressCountry: site.address.country,
     },
-    geo: {
+  };
+
+  if (site.phone) schema.telephone = site.phone;
+  if (site.email) schema.email = site.email;
+  if (site.geo) {
+    schema.geo = {
       "@type": "GeoCoordinates",
       latitude: site.geo.latitude,
       longitude: site.geo.longitude,
-    },
-    openingHoursSpecification: site.openingHours.map((spec) => ({
+    };
+  }
+  if (site.openingHours.length > 0) {
+    schema.openingHoursSpecification = site.openingHours.map((spec) => ({
       "@type": "OpeningHoursSpecification",
       dayOfWeek: spec.days,
       opens: spec.opens,
       closes: spec.closes,
-    })),
-    sameAs: [site.social.instagram, site.social.tiktok],
-  };
+    }));
+  }
+  const sameAs = [site.social.instagram, site.social.tiktok, site.social.google].filter(
+    Boolean,
+  );
+  if (sameAs.length > 0) schema.sameAs = sameAs;
+
+  return schema;
 }
 
 /** BreadcrumbList schema for a route page. */

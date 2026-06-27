@@ -1,185 +1,136 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
-import { PageHeader } from "@/components/PageHeader";
-import { Section } from "@/components/ui/Section";
+import { testimonials, reviewsPublished } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
-import { Magnetic } from "@/components/anim/Magnetic";
+import { BookButton } from "@/components/ui/BookButton";
+import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
 import { StarIcon } from "@/components/icons";
 import { JsonLd, breadcrumbSchema } from "@/components/JsonLd";
-import { testimonials, stats } from "@/lib/content";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Reviews — What Drivers Say About Moh's Shine Detailing",
+  title: "Reviews — Moh's Shine Detailing & Ceramic Coating",
   description:
-    "Real reviews from drivers across Raleigh, Durham and the NC Triangle. Premium mobile car detailing rated 4.9 stars — see what customers say about Moh's Shine.",
+    "What drivers across Raleigh, Durham, Cary and the NC Triangle say about Moh's Shine Detailing & Ceramic Coating — premium mobile detailing brought to your driveway.",
   path: "/reviews",
 });
 
-/**
- * Reviews page — Google-style cards in a responsive grid, plus an aggregate
- * rating header and a CTA to leave a Google review. Average rating + count
- * pull from the shared stats array so they stay in sync with the home page.
- */
-const avgStat = stats.find((s) => s.label.includes("rating"));
-const countStat = stats.find((s) => s.label.includes("Vehicles"));
+const showReviews = reviewsPublished && testimonials.length > 0;
 
 export default function ReviewsPage() {
-  const avg = avgStat ? avgStat.value.toFixed(1) : "4.9";
-  const count = countStat ? `${countStat.value}+` : "1,200+";
+  const crumbs = [
+    { name: "Home", path: "/" },
+    { name: "Reviews", path: "/reviews" },
+  ];
 
   return (
     <>
-      <JsonLd
-        data={breadcrumbSchema([
-          { name: "Home", path: "/" },
-          { name: "Reviews", path: "/reviews" },
-        ])}
-      />
+      <JsonLd data={breadcrumbSchema(crumbs)} />
 
-      <PageHeader
-        eyebrow="Kind words"
-        title="Drivers across the Triangle love the shine"
-        intro="Honest reviews from customers we've taken care of around Raleigh, Durham, Cary, Chapel Hill and beyond."
-        crumbs={[
-          { name: "Home", path: "/" },
-          { name: "Reviews", path: "/reviews" },
-        ]}
-      />
-
-      {/* Aggregate header */}
-      <Section>
-        <Reveal>
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-card to-black p-8 sm:p-12">
-            <div className="grid items-center gap-8 sm:grid-cols-[auto_1fr] sm:gap-12">
-              <div className="text-center sm:text-left">
-                <p className="text-6xl font-bold tracking-tight text-white sm:text-7xl">
-                  {avg}
-                </p>
-                <div
-                  className="mt-2 flex justify-center gap-1 text-shine sm:justify-start"
-                  aria-label={`${avg} out of 5 stars`}
-                >
-                  {Array.from({ length: 5 }).map((_, s) => (
-                    <StarIcon key={s} />
-                  ))}
-                </div>
-                <p className="mt-2 text-sm text-slate-muted">
-                  Average across {count} details
-                </p>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                  Real reviews, in their own words.
-                </h2>
-                <p className="mt-3 text-base leading-relaxed text-slate-muted sm:text-lg">
-                  We treat every car like it&apos;s our own — and our customers
-                  notice. Below are a few of the kind notes drivers have sent us
-                  after their details.
-                </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <Magnetic>
-                    <Button
-                      href={site.bookingUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="lg"
-                    >
-                      Book your detail
-                    </Button>
-                  </Magnetic>
-                  <Magnetic strength={6}>
-                    <Button href="/contact" variant="secondary" size="lg">
-                      Get a Quote
-                    </Button>
-                  </Magnetic>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </Section>
-
-      {/* Reviews grid */}
-      <Section className="bg-slate-surface">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((review, i) => (
-            <Reveal key={`${review.name}-${i}`} delay={i * 0.05}>
-              <figure className="flex h-full flex-col rounded-3xl border border-white/10 bg-black/40 p-7 transition-colors hover:border-shine/40">
-                {/* Google-style header: avatar + name + verified */}
-                <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-shine to-shine-700 font-bold text-black">
-                    {review.name.charAt(0)}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-white">{review.name}</p>
-                    <p className="text-xs text-slate-muted">
-                      Verified customer
-                    </p>
-                  </div>
-                  <svg
-                    className="ml-auto h-5 w-5 text-shine"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-label="Google review"
-                  >
-                    <path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.3 3-7.1z" />
-                    <path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.4c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.2v2.5C4.9 19.7 8.2 22 12 22z" />
-                    <path d="M6.4 14.1c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.8H3.2C2.4 9.3 2 11 2 12.2s.4 2.9 1.2 4.4l3.2-2.5z" />
-                    <path d="M12 6.5c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 3.6 14.7 2.6 12 2.6 8.2 2.6 4.9 4.9 3.2 8.3l3.2 2.5c.8-2.4 3-4.1 5.6-4.1z" />
-                  </svg>
-                </div>
-
-                <div
-                  className="mt-4 flex gap-1 text-shine"
-                  aria-label={`${review.rating} out of 5 stars`}
-                >
-                  {Array.from({ length: review.rating }).map((_, s) => (
-                    <StarIcon key={s} />
-                  ))}
-                </div>
-
-                <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-white/90 sm:text-base">
-                  &ldquo;{review.quote}&rdquo;
-                </blockquote>
-
-                <figcaption className="mt-5 border-t border-white/10 pt-4 text-xs uppercase tracking-wider text-slate-muted">
-                  {review.detail}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
+      {/* Cinematic header */}
+      <header className="relative overflow-hidden border-b border-chrome-line bg-navy-950 pt-28 sm:pt-36">
+        <div aria-hidden="true" className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-navy-700 via-navy-950 to-black" />
+          <div className="absolute right-[20%] top-[10%] h-[60vh] w-[60vh] rounded-full bg-shine/15 blur-[140px]" />
+          <div className="absolute inset-0 bg-shine-grid bg-[size:64px_64px] opacity-25 [mask-image:radial-gradient(ellipse_at_70%_30%,black,transparent_70%)]" />
         </div>
-      </Section>
-
-      {/* Bottom CTA */}
-      <Section>
-        <Container>
-          <Reveal className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-shine/15 to-slate-card p-8 text-center sm:p-12">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Detailed by us? <span className="text-shine">Tell the world.</span>
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-slate-muted sm:text-base">
-              Loved your detail? A quick Google review helps other drivers find
-              us — and it means a lot to a small mobile business.
+        <Container className="relative pb-16 sm:pb-20">
+          <Breadcrumbs items={crumbs} />
+          <Reveal>
+            <p className="eyebrow mb-6 flex items-center gap-3">
+              <span className="inline-block h-[6px] w-[6px] rounded-full bg-shine" />
+              Reviews
             </p>
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-              <Magnetic>
-                <Button href="https://g.page/r/mohsshinedetailing/review" target="_blank" rel="noopener noreferrer" size="lg">
-                  Leave a Google review
+            <h1 className="max-w-4xl text-balance text-5xl font-bold leading-[0.98] tracking-tightest text-white sm:text-6xl md:text-[4.5rem]">
+              Kind words from{" "}
+              <span className="text-shine italic">the Triangle.</span>
+            </h1>
+            <div className="mt-7 h-px w-16 bg-shine" aria-hidden="true" />
+            <p className="mt-6 max-w-2xl text-base font-light leading-relaxed text-chrome sm:text-lg">
+              Honest feedback from drivers across Raleigh, Durham, Cary and the
+              surrounding NC Triangle.
+            </p>
+          </Reveal>
+        </Container>
+      </header>
+
+      <section className="relative bg-black py-16 sm:py-24">
+        <Container>
+          {showReviews ? (
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((review, i) => (
+                <Reveal key={`${review.name}-${i}`} delay={i * 0.05}>
+                  <figure className="flex h-full flex-col border border-chrome-line bg-gradient-to-br from-slate-card to-black p-7">
+                    <div className="flex gap-1 text-shine" aria-label={`${review.rating} out of 5 stars`}>
+                      {Array.from({ length: review.rating }).map((_, s) => (
+                        <StarIcon key={s} />
+                      ))}
+                    </div>
+                    <blockquote className="mt-4 flex-1 text-base leading-relaxed text-white/90">
+                      &ldquo;{review.quote}&rdquo;
+                    </blockquote>
+                    <figcaption className="mt-6 border-t border-chrome-line pt-4">
+                      <p className="font-semibold text-white">{review.name}</p>
+                      <p className="mt-1 text-xs uppercase tracking-widest text-chrome">
+                        {review.detail}
+                      </p>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            /* Honest pre-launch state — no fabricated reviews, count or rating. */
+            <Reveal className="mx-auto max-w-2xl border border-chrome-line bg-gradient-to-br from-slate-card to-black p-10 text-center sm:p-14">
+              <p className="eyebrow mb-4">Building our reputation</p>
+              <h2 className="text-balance text-3xl font-bold tracking-tightest text-white sm:text-4xl">
+                Reviews are on the way.
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-base font-light leading-relaxed text-chrome sm:text-lg">
+                We&apos;re a growing mobile detailing studio, and we&apos;ll share
+                customer reviews here as they come in. Detailed with us? We&apos;d
+                love your feedback.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                {site.social.google ? (
+                  <Button href={site.social.google} target="_blank" rel="noopener noreferrer" size="lg">
+                    Leave a Google review
+                  </Button>
+                ) : (
+                  <BookButton size="lg">Book a Detail</BookButton>
+                )}
+                <Button href="/contact" variant="secondary" size="lg">
+                  Get a Quote
                 </Button>
-              </Magnetic>
-              <Magnetic strength={6}>
-                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" variant="secondary" size="lg">
-                  Book your next detail
-                </Button>
-              </Magnetic>
+              </div>
+            </Reveal>
+          )}
+        </Container>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="relative border-t border-chrome-line bg-black py-20 sm:py-28">
+        <Container>
+          <Reveal className="overflow-hidden border border-chrome-line bg-gradient-to-br from-shine/15 to-navy-950 p-10 text-center sm:p-16">
+            <p className="eyebrow mb-5">Ready when you are</p>
+            <h2 className="text-balance text-4xl font-bold tracking-tightest text-white sm:text-5xl">
+              Experience it <span className="text-shine italic">yourself.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base font-light leading-relaxed text-chrome sm:text-lg">
+              We bring the full studio to your driveway across the Raleigh–Durham
+              Triangle. Tell us about your vehicle and we&apos;ll send a quote.
+            </p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <BookButton size="lg">Book Now</BookButton>
+              <Button href="/contact" variant="secondary" size="lg">
+                Get a Quote
+              </Button>
             </div>
           </Reveal>
         </Container>
-      </Section>
+      </section>
     </>
   );
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
 import { services, getServiceBySlug } from "@/lib/services";
-import { site } from "@/lib/site";
+import { BookButton } from "@/components/ui/BookButton";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
@@ -136,15 +136,9 @@ export default function ServiceDetailPage({
                 </Button>
               </Magnetic>
               <Magnetic strength={8}>
-                <Button
-                  href={site.bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="secondary"
-                  size="lg"
-                >
+                <BookButton variant="secondary" size="lg">
                   Book Now
-                </Button>
+                </BookButton>
               </Magnetic>
             </div>
           </Reveal>
@@ -234,15 +228,9 @@ export default function ServiceDetailPage({
 
               <div className="mt-2 flex flex-col gap-3">
                 <Magnetic>
-                  <Button
-                    href={site.bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="lg"
-                    className="w-full"
-                  >
+                  <BookButton size="lg" className="w-full">
                     Book Now
-                  </Button>
+                  </BookButton>
                 </Magnetic>
                 <Magnetic strength={6}>
                   <Button href="/contact" variant="secondary" size="lg" className="w-full">
@@ -431,9 +419,7 @@ export default function ServiceDetailPage({
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Magnetic>
-                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-                  Book Now
-                </Button>
+                <BookButton size="lg">Book Now</BookButton>
               </Magnetic>
               <Magnetic strength={6}>
                 <Button href="/contact" variant="secondary" size="lg">

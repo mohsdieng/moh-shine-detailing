@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Logo } from "./Logo";
 import { Magnetic } from "./anim/Magnetic";
-import { site } from "@/lib/site";
+import { site, hasPhone, hasEmail } from "@/lib/site";
 import { services } from "@/lib/services";
 import { publishedCities } from "@/lib/cities";
 
@@ -65,18 +65,24 @@ export function Footer() {
             {site.tagline} We bring the full detailing studio to your driveway —
             water, power and pro-grade products.
           </p>
-          <div className="mt-6 flex gap-3">
-            <SocialIcon
-              href={site.social.instagram}
-              label="Instagram"
-              path={<InstagramPath />}
-            />
-            <SocialIcon
-              href={site.social.tiktok}
-              label="TikTok"
-              path={<TikTokPath />}
-            />
-          </div>
+          {(site.social.instagram || site.social.tiktok) && (
+            <div className="mt-6 flex gap-3">
+              {site.social.instagram && (
+                <SocialIcon
+                  href={site.social.instagram}
+                  label="Instagram"
+                  path={<InstagramPath />}
+                />
+              )}
+              {site.social.tiktok && (
+                <SocialIcon
+                  href={site.social.tiktok}
+                  label="TikTok"
+                  path={<TikTokPath />}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         {/* Services */}
@@ -156,22 +162,26 @@ export function Footer() {
             Get in touch
           </h2>
           <ul className="mt-4 space-y-3 text-sm text-slate-muted">
-            <li>
-              <a href={site.phoneHref} className="transition-colors hover:text-shine">
-                {site.phone}
-              </a>
-            </li>
-            <li>
-              <a href={site.emailHref} className="transition-colors hover:text-shine">
-                {site.email}
-              </a>
-            </li>
+            {hasPhone && (
+              <li>
+                <a href={site.phoneHref} className="transition-colors hover:text-shine">
+                  {site.phone}
+                </a>
+              </li>
+            )}
+            {hasEmail && (
+              <li>
+                <a href={site.emailHref} className="transition-colors hover:text-shine">
+                  {site.email}
+                </a>
+              </li>
+            )}
             <li className="pt-1 text-slate-muted">
               Serving Raleigh, Durham &amp; the NC Triangle
             </li>
           </ul>
 
-          <Newsletter />
+          {hasEmail && <Newsletter />}
         </div>
       </div>
 

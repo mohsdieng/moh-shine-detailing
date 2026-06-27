@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
-import { site } from "@/lib/site";
+import { BookButton } from "@/components/ui/BookButton";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -177,16 +177,13 @@ export default function PackagesPage() {
 
                 <div className="mt-7 flex flex-col gap-3">
                   <Magnetic>
-                    <Button
-                      href={site.bookingUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <BookButton
                       variant={tier.popular ? "primary" : "secondary"}
                       size="lg"
                       className="w-full"
                     >
                       {tier.ctaLabel}
-                    </Button>
+                    </BookButton>
                   </Magnetic>
                 </div>
               </article>
@@ -267,9 +264,7 @@ export default function PackagesPage() {
                 </Button>
               </Magnetic>
               <Magnetic strength={6}>
-                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" variant="secondary" size="lg">
-                  Or book directly
-                </Button>
+                <BookButton variant="secondary" size="lg">Or book directly</BookButton>
               </Magnetic>
             </div>
           </Reveal>

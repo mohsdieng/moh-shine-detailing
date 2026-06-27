@@ -5,8 +5,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Container } from "../ui/Container";
 import { Reveal } from "../Reveal";
 import { Button } from "../ui/Button";
+import { BookButton } from "../ui/BookButton";
 import { Magnetic } from "../anim/Magnetic";
-import { site } from "@/lib/site";
 
 const tiers = [
   {
@@ -133,9 +133,7 @@ export function PackagesTeaser() {
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Magnetic>
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                Book a Detail
-              </Button>
+              <BookButton>Book a Detail</BookButton>
             </Magnetic>
             <Magnetic strength={6}>
               <Button href="/packages" variant="secondary">

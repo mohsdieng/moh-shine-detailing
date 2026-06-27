@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Container } from "../ui/Container";
 import { Reveal } from "../Reveal";
 import { Button } from "../ui/Button";
+import { BookButton } from "../ui/BookButton";
 import { Magnetic } from "../anim/Magnetic";
 import { Feature } from "./Feature";
 import { services } from "@/lib/services";
-import { site } from "@/lib/site";
 
 /**
  * Services section on the home page — five "feature" rows in alternating
@@ -103,9 +103,7 @@ export function Services() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Magnetic>
-                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                  Book a Detail
-                </Button>
+                <BookButton>Book a Detail</BookButton>
               </Magnetic>
               <Magnetic strength={6}>
                 <Button href="/services" variant="secondary">

@@ -4,15 +4,18 @@ import { useState, type FormEvent } from "react";
 import { Section } from "../ui/Section";
 import { Reveal } from "../Reveal";
 import { Button } from "../ui/Button";
+import { BookButton } from "../ui/BookButton";
 import { Magnetic } from "../anim/Magnetic";
-import { site } from "@/lib/site";
+import { site, hasPhone, hasEmail, hasBooking, bookHref, bookLinkProps } from "@/lib/site";
 import { services } from "@/lib/services";
 
 /**
  * Contact section.
- *  - Left: heading + booking CTAs + direct-contact cards + hours.
- *  - Right: quick "Get a quote" form that opens the user's mail client with
- *    a pre-filled body. Keeps the site backend-free while still feeling real.
+ *  - Left: heading + booking CTA + any configured contact channels + hours.
+ *  - Right: quick "Get a quote" form that opens the visitor's mail client (when
+ *    an email is configured) or routes to booking; otherwise a graceful
+ *    "coming soon" card. Every channel is rendered only when set in
+ *    lib/site.ts, so no fake phone/email/hours ever appears.
  */
 export function Contact() {
   return (
@@ -27,71 +30,81 @@ export function Contact() {
                 Ready for that <span className="text-shine">shine?</span>
               </h2>
               <p className="mt-5 text-base leading-relaxed text-slate-muted sm:text-lg">
-                Book online in under a minute through Square, or use the form to
-                get a tailored quote. We confirm the time and come to you — no
-                matter where you are in the Raleigh–Durham Triangle.
+                Tell us about your vehicle and we&apos;ll bring the full studio to
+                your driveway — anywhere across Raleigh, Durham and the NC
+                Triangle. We confirm the time and come to you.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Magnetic>
-                  <Button
-                    href={site.bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="lg"
-                  >
-                    Book on Square
-                  </Button>
+                  <BookButton size="lg">Book Now</BookButton>
                 </Magnetic>
-                <Magnetic strength={10}>
-                  <Button href={site.phoneHref} variant="secondary" size="lg">
-                    Call for a Quote
-                  </Button>
-                </Magnetic>
+                {hasPhone && (
+                  <Magnetic strength={10}>
+                    <Button href={site.phoneHref} variant="secondary" size="lg">
+                      Call for a Quote
+                    </Button>
+                  </Magnetic>
+                )}
               </div>
             </Reveal>
 
-            <Reveal delay={0.1} className="mt-8 grid gap-3 sm:grid-cols-2">
-              <ContactCard
-                href={site.phoneHref}
-                eyebrow="Call or text"
-                label={site.phone}
-                icon={<PhoneIcon />}
-              />
-              <ContactCard
-                href={site.emailHref}
-                eyebrow="Email"
-                label={site.email}
-                icon={<MailIcon />}
-              />
-            </Reveal>
+            {(hasPhone || hasEmail) && (
+              <Reveal delay={0.1} className="mt-8 grid gap-3 sm:grid-cols-2">
+                {hasPhone && (
+                  <ContactCard
+                    href={site.phoneHref}
+                    eyebrow="Call or text"
+                    label={site.phone}
+                    icon={<PhoneIcon />}
+                  />
+                )}
+                {hasEmail && (
+                  <ContactCard
+                    href={site.emailHref}
+                    eyebrow="Email"
+                    label={site.email}
+                    icon={<MailIcon />}
+                  />
+                )}
+              </Reveal>
+            )}
 
-            <Reveal delay={0.18} className="mt-3">
-              <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <div className="flex items-center justify-between">
+            {site.hours.length > 0 && (
+              <Reveal delay={0.18} className="mt-3">
+                <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
                   <span className="text-xs uppercase tracking-wider text-slate-muted">
                     Hours
                   </span>
-                  <span className="flex items-center gap-2 text-xs text-emerald-400">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]" />
-                    Accepting bookings
-                  </span>
+                  <ul className="mt-3 grid gap-1.5 text-sm text-white/90">
+                    {site.hours.map((h) => (
+                      <li key={h.days} className="flex justify-between gap-4">
+                        <span>{h.days}</span>
+                        <span className="text-slate-muted">{h.time}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mt-3 grid gap-1.5 text-sm text-white/90">
-                  {site.hours.map((h) => (
-                    <li key={h.days} className="flex justify-between gap-4">
-                      <span>{h.days}</span>
-                      <span className="text-slate-muted">{h.time}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
+              </Reveal>
+            )}
           </div>
 
-          {/* Right — quote form */}
+          {/* Right — quote form, or a graceful notice if no channel is set yet */}
           <Reveal delay={0.08}>
-            <QuoteForm />
+            {hasEmail || hasBooking ? (
+              <QuoteForm />
+            ) : (
+              <div className="flex h-full flex-col justify-center rounded-2xl border border-white/10 bg-black/50 p-6 text-center sm:p-8">
+                <p className="text-xs uppercase tracking-wider text-shine">Booking</p>
+                <h3 className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">
+                  Online booking is on the way
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-muted">
+                  We&apos;re finalizing our booking system. Check back shortly to
+                  reserve your detail online.
+                </p>
+              </div>
+            )}
           </Reveal>
         </div>
       </div>
@@ -153,10 +166,15 @@ function QuoteForm() {
       notes,
     ].join("\n");
 
-    // Open the visitor's mail client with everything pre-filled.
-    window.location.href = `${site.emailHref}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
+    if (site.emailHref) {
+      // Open the visitor's mail client with everything pre-filled.
+      window.location.href = `${site.emailHref}?subject=${encodeURIComponent(
+        subject,
+      )}&body=${encodeURIComponent(body)}`;
+    } else {
+      // No email configured yet — send them to booking instead.
+      window.open(bookHref, bookLinkProps.target ?? "_self");
+    }
     setSubmitted(true);
   };
 
@@ -175,7 +193,7 @@ function QuoteForm() {
         <Field
           name="contact"
           label="Phone or email"
-          placeholder="(919) 555-0142 or you@email.com"
+          placeholder="How can we reach you?"
           required
         />
         <Field name="vehicle" label="Vehicle" placeholder="2020 Honda Civic" required />
@@ -194,7 +212,9 @@ function QuoteForm() {
           </Button>
         </Magnetic>
         <p className="text-xs text-slate-muted">
-          Opens your mail app. We reply within the hour.
+          {site.emailHref
+            ? "Opens your mail app. We reply within the hour."
+            : "Takes you to our booking page."}
         </p>
       </div>
     </form>
