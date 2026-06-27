@@ -173,7 +173,7 @@ export function BeforeAfter({
         aria-valuemax={100}
         aria-valuenow={Math.round(pos)}
         onKeyDown={onKey}
-        className="absolute inset-y-0 z-10 -ml-px w-[2px] cursor-ew-resize bg-shine shadow-[0_0_30px_2px_rgba(56,182,255,0.5)] focus:outline-none"
+        className="absolute inset-y-0 z-10 -ml-px w-[2px] cursor-ew-resize bg-shine shadow-[0_0_30px_2px_rgba(56,182,255,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         style={{ left: `${pos}%` }}
       >
         <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-shine bg-black text-shine shadow-lg">
