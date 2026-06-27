@@ -36,7 +36,9 @@ export function IntroLoader() {
     window.sessionStorage.setItem(SESSION_KEY, "1");
 
     // Intentionally NOT returning a cleanup — see file header comment.
-    window.setTimeout(() => setShow(false), 1600);
+    // Kept short (1.1s) so it doesn't meaningfully delay first contentful
+    // paint / LCP for first-time visitors.
+    window.setTimeout(() => setShow(false), 1100);
   }, [reduce]);
 
   // Lock body scroll only while the overlay is visible.
@@ -77,7 +79,7 @@ export function IntroLoader() {
               <motion.span
                 initial={{ x: "-100%" }}
                 animate={{ x: "0%" }}
-                transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
                 className="absolute inset-y-0 left-0 block w-full bg-shine"
               />
             </div>

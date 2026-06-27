@@ -225,20 +225,20 @@ export function Hero() {
           {/* Restrained headline — single concept, three short lines */}
           <h1 className="text-balance text-[12vw] font-bold leading-[0.95] tracking-tightest sm:text-6xl md:text-[5rem] lg:text-[5.75rem]">
             <span className="block text-white">
-              <SplitText text="Premium Mobile" stagger={0.05} />
+              <SplitText text="Premium Mobile" stagger={0.04} duration={0.5} />
             </span>
             <span className="block text-white">
-              <SplitText text="Detailing," stagger={0.05} />
+              <SplitText text="Detailing," stagger={0.04} duration={0.5} />
             </span>
             <span className="block text-shine italic">
-              <SplitText text="Anywhere." stagger={0.05} />
+              <SplitText text="Anywhere." stagger={0.04} duration={0.5} />
             </span>
           </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45, ease }}
+            transition={{ duration: 0.5, delay: 0.35, ease }}
             className="mt-7 max-w-xl text-base font-light leading-relaxed text-chrome sm:text-lg"
           >
             Luxury car care delivered to your home or office across the Raleigh –
@@ -249,7 +249,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6, ease }}
+            transition={{ duration: 0.5, delay: 0.45, ease }}
             className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
           >
             <Magnetic strength={10}>
@@ -269,7 +269,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.85, ease }}
+            transition={{ duration: 0.5, delay: 0.6, ease }}
             className="mt-14 max-w-xl"
           >
             <div className="hairline" />

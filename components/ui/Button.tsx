@@ -27,7 +27,10 @@ const sizes: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group inline-flex items-center justify-center gap-2.5 rounded-sm font-semibold uppercase tracking-[0.16em] transition-all duration-300 ease-out will-change-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shine";
+  // No `will-change-transform`: it forces a compositor layer on every button
+  // (dozens per page on the service/blog grids) for a hover effect that's
+  // already cheap to composite on demand.
+  "group inline-flex items-center justify-center gap-2.5 rounded-sm font-semibold uppercase tracking-[0.16em] transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shine";
 
 type CommonProps = {
   variant?: Variant;
