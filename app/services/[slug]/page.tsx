@@ -16,6 +16,8 @@ import { JsonLd, breadcrumbSchema, serviceSchema } from "@/components/JsonLd";
 import { Faq } from "@/components/sections/Faq";
 import { mediaFor } from "@/lib/media";
 import { citiesForService, publishedCities } from "@/lib/cities";
+import { postsForContext } from "@/lib/blog";
+import { FromTheBlog } from "@/components/blog/FromTheBlog";
 
 /* ---------- Static generation -------------------------------------- */
 
@@ -54,6 +56,7 @@ export default function ServiceDetailPage({
   // city hubs when none do yet, so the internal links are always useful.
   const serviceCities = citiesForService(service.slug);
   const linkCities = serviceCities.length > 0 ? serviceCities : publishedCities();
+  const blogPosts = postsForContext({ serviceSlug: service.slug, limit: 3 });
 
   return (
     <>
@@ -409,6 +412,9 @@ export default function ServiceDetailPage({
 
       {/* Per-service FAQ — shared list, applicable to all services */}
       <Faq />
+
+      {/* From the blog — contextual backlinks, kept secondary to the CTA */}
+      <FromTheBlog posts={blogPosts} />
 
       {/* Bottom CTA */}
       <section className="relative border-t border-chrome-line bg-black py-20 sm:py-28">
