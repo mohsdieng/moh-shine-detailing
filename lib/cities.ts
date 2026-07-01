@@ -91,7 +91,7 @@ export const cities: City[] = [
       "headlight-restoration",
       "engine-bay-cleaning",
     ],
-    nearby: ["cary", "durham", "morrisville", "apex", "wake-forest"],
+    nearby: ["cary", "durham", "morrisville", "apex", "wake-forest", "garner"],
   },
   {
     slug: "cary",
@@ -143,7 +143,7 @@ export const cities: City[] = [
     availability: "Daily routes through Durham.",
     travelNote: "Roughly 25 minutes from our Raleigh base.",
     services: ["ceramic-coating", "paint-correction", "interior-detail", "exterior-detail"],
-    nearby: ["raleigh", "cary", "morrisville"],
+    nearby: ["raleigh", "cary", "morrisville", "chapel-hill"],
   },
 
   {
@@ -222,16 +222,24 @@ export const cities: City[] = [
     full: "Garner, NC",
     county: "Wake County",
     geo: { lat: 35.7113, lng: -78.6142 },
-    published: false,
-    tagline: "Southeast-Triangle detailing without the drive.",
+    published: true,
+    tagline:
+      "Southeast-Triangle detailing, brought to your Garner driveway — no shop, no drop-off.",
     intro:
-      "Garner sits just southeast of Raleigh, an easy route for our mobile setup. We bring the full detailing studio to your driveway.",
-    neighborhoods: ["Heather Hills", "Cleveland", "Adams Point", "Downtown Garner"],
-    landmarks: ["White Deer Park", "Lake Benson Park", "Downtown Garner"],
-    availability: "Weekly routes.",
-    travelNote: "Roughly 15 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
-    nearby: ["raleigh"],
+      "Garner sits directly southeast of Raleigh along US-70 and I-40, which makes it one of the quickest stops on our routes. We cover neighborhoods from Heather Hills and Vandora Springs to the newer builds off White Oak, bringing a fully self-contained mobile studio — our own water and power — to your driveway. For Garner commuters who'd rather not give up an evening at a shop, the detail comes to you.",
+    neighborhoods: [
+      "Heather Hills",
+      "Vandora Springs",
+      "Adams Point",
+      "Cleveland",
+      "White Oak",
+      "Downtown Garner",
+    ],
+    landmarks: ["White Deer Park", "Lake Benson Park", "Garner Performing Arts Center", "Downtown Garner"],
+    availability: "Routes most weeks.",
+    travelNote: "Roughly 15 minutes from our Raleigh base — one of our closest stops.",
+    services: ["ceramic-coating", "interior-detail", "exterior-detail"],
+    nearby: ["raleigh", "cary"],
   },
   {
     slug: "chapel-hill",
@@ -239,15 +247,22 @@ export const cities: City[] = [
     full: "Chapel Hill, NC",
     county: "Orange County",
     geo: { lat: 35.9132, lng: -79.0558 },
-    published: false,
-    tagline: "Detailing for the Southern Part of Heaven.",
+    published: true,
+    tagline:
+      "Detailing for the Southern Part of Heaven — the mobile studio comes to you.",
     intro:
-      "Chapel Hill anchors the west side of the Triangle, and we make trips out for appointments around UNC, Southern Village and Meadowmont.",
-    neighborhoods: ["Southern Village", "Meadowmont", "Briar Chapel", "Downtown Chapel Hill"],
-    landmarks: ["UNC-Chapel Hill", "Franklin Street", "Southern Village"],
+      "Chapel Hill anchors the west side of the Triangle, home to UNC and a community that takes real pride in its cars. We make regular trips out I-40 for appointments around Southern Village, Meadowmont, Glen Lennox and the streets near Franklin Street and campus, bringing the full mobile setup to your driveway or office. It's a popular choice with faculty, families and professionals who'd rather not lose a day to a detail shop.",
+    neighborhoods: [
+      "Southern Village",
+      "Meadowmont",
+      "Glen Lennox",
+      "The Oaks",
+      "Downtown Chapel Hill",
+    ],
+    landmarks: ["UNC-Chapel Hill", "Franklin Street", "Southern Village", "Meadowmont"],
     availability: "Tue / Thu / Sat routes.",
-    travelNote: "Roughly 35 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
+    travelNote: "Roughly 35 minutes from our Raleigh base, out I-40.",
+    services: ["ceramic-coating", "interior-detail", "paint-correction"],
     nearby: ["durham", "cary"],
   },
 ];
@@ -310,6 +325,22 @@ const cityServiceIntros: Record<string, string> = {
   /* --- Batch 2: Wake Forest --- */
   "wake-forest:ceramic-coating":
     "Wake Forest drivers often keep their cars for the long haul, which makes ceramic coating an easy decision — years of protection and far easier washes instead of re-waxing every few weeks. We bring the full coating process north to your Heritage, Wakefield or Traditions driveway: decon, light correction, coating and cure, all on-site, leaving a hydrophobic finish built to last.",
+
+  /* --- Batch 3: Garner --- */
+  "garner:ceramic-coating":
+    "Garner's quick hop down US-70 from Raleigh makes it easy for us to bring the full ceramic process to your driveway. A coating bonds years of hydrophobic protection to your paint, so pollen and summer rain slide off and washes get faster — we handle decontamination, a leveling polish and the coating on-site around Heather Hills, Vandora Springs and the newer builds off White Oak.",
+  "garner:interior-detail":
+    "Between Garner commutes up I-40 and family weekends at Lake Benson Park, interiors collect their share of life. Our interior detail resets the cabin right in your driveway: full vacuum and compressed-air blowout, steam on every surface, leather conditioned or fabric shampooed, glass polished and a light finish — so your Garner daily driver feels new again without a trip to a shop.",
+  "garner:exterior-detail":
+    "A Garner daily driver picks up pollen, road film off US-70 and the occasional tar spot. An exterior detail goes well past a wash — hand wash, iron decontamination, clay and a durable sealant that beads water and stays slick for months. We bring our own water and power to your Heather Hills or Vandora Springs driveway and leave the finish genuinely clean, not just rinsed.",
+
+  /* --- Batch 3: Chapel Hill --- */
+  "chapel-hill:ceramic-coating":
+    "Chapel Hill drivers tend to keep their cars and care how they look, which makes ceramic coating an easy call. We bring the full process out I-40 to driveways around Southern Village, Meadowmont and Glen Lennox: decontamination, a leveling polish, panel-wipe and a professional-grade coating, cured on-site — so water beads off and the gloss holds for years through UNC-town pollen and summer sun.",
+  "chapel-hill:interior-detail":
+    "Faculty, families and students' cars around Chapel Hill see a lot of campus miles, and the cabin usually shows it first — coffee on the console, gym bags, daily dust. Our interior detail deep-cleans every surface at your home near Franklin Street, Meadowmont or Southern Village: vacuum, steam, leather or fabric treatment, glass and a light fragrance, so the drive to campus starts fresh.",
+  "chapel-hill:paint-correction":
+    "Dark, well-kept cars are everywhere around UNC, and they show every swirl in the Chapel Hill sun. Paint correction physically removes those swirls, holograms and light scratches rather than masking them — we machine-polish under correction lighting at your Southern Village or Meadowmont driveway, with an optional ceramic coating to protect the result.",
 };
 
 /* ------------------------------------------------------------------ */
