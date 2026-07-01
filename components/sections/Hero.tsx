@@ -12,10 +12,14 @@ import { Container } from "../ui/Container";
 import { Magnetic } from "../anim/Magnetic";
 import { SplitText } from "../anim/SplitText";
 import { site } from "@/lib/site";
+import { mediaFor } from "@/lib/media";
 
-/** Path conventions — drop the files here to enable the hero video. */
-const HERO_VIDEO_MP4 = "/videos/hero.mp4";
-const HERO_POSTER = "/posters/hero.jpg";
+// Resolve hero media from the central registry.
+// Local files win when they exist; Unsplash temp fills in until then.
+const heroMedia = mediaFor("hero");
+const HERO_VIDEO_MP4 = heroMedia.video?.local ?? "/videos/hero.mp4";
+const HERO_POSTER_LOCAL = heroMedia.poster?.local ?? "/posters/hero.jpg";
+const HERO_POSTER_TEMP = heroMedia.poster?.temp;
 
 /**
  * Hero — luxury automotive launch-page style.
@@ -30,12 +34,34 @@ const HERO_POSTER = "/posters/hero.jpg";
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const posterImgRef = useRef<HTMLImageElement>(null);
   const reduce = useReducedMotion();
 
   // Hero video state — auto-tries the .mp4, swaps to the CSS cinematic bg
   // if it errors (file missing, codec unsupported, slow connection).
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
+
+  // Poster — tries the local path first; falls back to the Unsplash temp URL.
+  const [posterSrc, setPosterSrc] = useState(HERO_POSTER_LOCAL);
+  const [posterTriedTemp, setPosterTriedTemp] = useState(false);
+  const onPosterError = () => {
+    if (!posterTriedTemp && HERO_POSTER_TEMP) {
+      setPosterSrc(HERO_POSTER_TEMP);
+      setPosterTriedTemp(true);
+    }
+  };
+
+  // The hero poster loads eagerly, so its 404 can fire BEFORE React hydrates
+  // and attaches onError. Re-check on mount: if the eager image already
+  // failed (complete with zero intrinsic size), swap to the temp source.
+  useEffect(() => {
+    const img = posterImgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && HERO_POSTER_TEMP) {
+      setPosterSrc(HERO_POSTER_TEMP);
+      setPosterTriedTemp(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (reduce) return;
@@ -94,13 +120,33 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black via-black/60 to-transparent" />
       </motion.div>
 
+      {/* Layer 1a — poster photo. Resolves local first, then Unsplash temp.
+          Always visible below the video so there's a real photo even before
+          the video loads or when no video file exists. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={posterImgRef}
+        src={posterSrc}
+        alt=""
+        aria-hidden="true"
+        loading="eager"
+        onError={onPosterError}
+        className="absolute inset-0 h-full w-full object-cover opacity-60"
+        draggable={false}
+      />
+      {/* Layer 1a overlay — keeps text readable over the photo */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-b from-black/50 via-navy-950/60 to-black/85"
+      />
+
       {/* Layer 1b — full-bleed cinematic video, fades in over Layer 1 when
           it starts playing. If the file is missing or the codec is rejected,
           the CSS bg above remains visible — zero broken state. */}
       {videoActive && (
         <video
           ref={videoRef}
-          poster={HERO_POSTER}
+          poster={posterSrc}
           muted
           loop
           playsInline
@@ -114,6 +160,7 @@ export function Hero() {
           }`}
         >
           <source src={HERO_VIDEO_MP4} type="video/mp4" />
+          {/* No temp video — Unsplash doesn't serve mp4. Drop /videos/hero.mp4 to enable. */}
         </video>
       )}
 

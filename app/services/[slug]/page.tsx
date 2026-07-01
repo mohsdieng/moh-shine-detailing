@@ -10,9 +10,11 @@ import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/anim/Magnetic";
 import { CinematicPanel } from "@/components/anim/CinematicPanel";
+import { CinematicVideo } from "@/components/anim/CinematicVideo";
 import { serviceIcons } from "@/components/icons";
 import { JsonLd, breadcrumbSchema, serviceSchema } from "@/components/JsonLd";
 import { Faq } from "@/components/sections/Faq";
+import { mediaFor } from "@/lib/media";
 
 /* ---------- Static generation -------------------------------------- */
 
@@ -46,6 +48,7 @@ export default function ServiceDetailPage({
 
   const Icon = serviceIcons[service.icon];
   const related = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const m = mediaFor(service.slug);
 
   return (
     <>
@@ -168,7 +171,14 @@ export default function ServiceDetailPage({
           {/* Sticky pricing card */}
           <Reveal delay={0.1}>
             <aside className="lg:sticky lg:top-28">
-              <CinematicPanel icon={service.icon} tag={service.shortTitle.toUpperCase()} className="!aspect-[4/3]" />
+              <CinematicVideo
+                poster={m.poster}
+                video={m.video}
+                tag={service.shortTitle.toUpperCase()}
+                alt={service.title}
+                className="aspect-[4/3]"
+                fallback={<CinematicPanel icon={service.icon} bare />}
+              />
 
               <div className="mt-6 border-y border-chrome-line py-6">
                 <p className="text-xs uppercase tracking-widest text-chrome/70">
