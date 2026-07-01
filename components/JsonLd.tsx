@@ -111,3 +111,33 @@ export function faqPageSchema(items: { q: string; a: string }[]) {
     })),
   };
 }
+
+/** BlogPosting schema for an individual article. */
+export function blogPostingSchema(opts: {
+  title: string;
+  description: string;
+  path: string;
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  image?: string;
+}) {
+  const url = `${site.url}${opts.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: opts.title,
+    description: opts.description,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    image: opts.image ?? `${site.url}/og.png`,
+    datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
+    author: { "@type": "Organization", name: opts.author ?? site.name, url: site.url },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      logo: { "@type": "ImageObject", url: `${site.url}/logo.png` },
+    },
+  };
+}
