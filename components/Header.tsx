@@ -68,15 +68,17 @@ export function Header() {
     setOpenDropdown(null);
   }, [pathname]);
 
-  // Close dropdown on Escape.
+  // Close the dropdown or the fullscreen mobile menu on Escape.
   useEffect(() => {
-    if (!openDropdown) return;
+    if (!openDropdown && !open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenDropdown(null);
+      if (e.key !== "Escape") return;
+      setOpenDropdown(null);
+      setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [openDropdown]);
+  }, [openDropdown, open]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -128,6 +130,7 @@ export function Header() {
                 <Link
                   href={link.href}
                   data-active={isActive(link.href) ? "true" : undefined}
+                  aria-current={isActive(link.href) ? "page" : undefined}
                   aria-haspopup={link.dropdown ? "menu" : undefined}
                   aria-expanded={
                     link.dropdown ? openDropdown === link.label : undefined
