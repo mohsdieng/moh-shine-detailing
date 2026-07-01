@@ -82,8 +82,16 @@ export const cities: City[] = [
     landmarks: ["NC State University", "North Hills", "PNC Arena", "Downtown Raleigh"],
     availability: "Same-day availability most weeks.",
     travelNote: "As our home base, Raleigh gets the widest scheduling windows.",
-    services: ["ceramic-coating", "paint-correction", "interior-detail"],
-    nearby: ["cary", "durham"],
+    services: [
+      "ceramic-coating",
+      "paint-correction",
+      "interior-detail",
+      "exterior-detail",
+      "wash-and-wax",
+      "headlight-restoration",
+      "engine-bay-cleaning",
+    ],
+    nearby: ["cary", "durham", "morrisville", "apex", "wake-forest"],
   },
   {
     slug: "cary",
@@ -108,8 +116,8 @@ export const cities: City[] = [
     landmarks: ["Koka Booth Amphitheatre", "Bond Park", "WakeMed Soccer Park", "Downtown Cary"],
     availability: "Daily routes through Cary.",
     travelNote: "Roughly 15 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
-    nearby: ["raleigh", "durham"],
+    services: ["ceramic-coating", "paint-correction", "interior-detail", "exterior-detail"],
+    nearby: ["raleigh", "durham", "morrisville", "apex"],
   },
   {
     slug: "durham",
@@ -134,27 +142,34 @@ export const cities: City[] = [
     landmarks: ["Duke University", "American Tobacco Campus", "Streets at Southpoint", "Research Triangle Park"],
     availability: "Daily routes through Durham.",
     travelNote: "Roughly 25 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
-    nearby: ["raleigh", "cary"],
+    services: ["ceramic-coating", "paint-correction", "interior-detail", "exterior-detail"],
+    nearby: ["raleigh", "cary", "morrisville"],
   },
 
-  /* --- Ready to publish later (data complete, pages off for now) ---- */
   {
     slug: "morrisville",
     name: "Morrisville",
     full: "Morrisville, NC",
     county: "Wake County",
     geo: { lat: 35.8235, lng: -78.8256 },
-    published: false,
-    tagline: "Mobile detailing between RTP and RDU — we come to you.",
+    published: true,
+    tagline:
+      "Tucked between RTP and RDU — concierge mobile detailing for Morrisville's tech corridor.",
     intro:
-      "Morrisville sits right between Research Triangle Park and RDU, and we route through it on the way to Cary and Durham. Our mobile setup brings everything to your driveway or office lot.",
-    neighborhoods: ["Breckenridge", "Savannah", "Carpenter Village", "Kitts Creek"],
-    landmarks: ["Research Triangle Park", "RDU Airport", "Park West Village"],
-    availability: "Weekly routes.",
-    travelNote: "Roughly 20 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
-    nearby: ["cary", "durham", "raleigh"],
+      "Morrisville sits right between Research Triangle Park and RDU airport, which makes it one of the easier stops on our daily Cary–Durham routes. We bring a fully self-contained mobile studio to driveways and office lots from Breckenridge and Carpenter Village to the newer Kitts Creek and Savannah builds — handy for the many RTP professionals and frequent flyers who'd rather hand over the keys at home than lose an evening at a shop.",
+    neighborhoods: [
+      "Breckenridge",
+      "Carpenter Village",
+      "Kitts Creek",
+      "Savannah",
+      "Town Hall Commons",
+      "Park West Village",
+    ],
+    landmarks: ["Research Triangle Park", "RDU Airport", "Park West Village", "Lake Crabtree"],
+    availability: "Routes most weekdays.",
+    travelNote: "Roughly 20 minutes from our Raleigh base, on our regular Cary–Durham loop.",
+    services: ["ceramic-coating", "interior-detail"],
+    nearby: ["cary", "durham", "raleigh", "apex"],
   },
   {
     slug: "apex",
@@ -162,16 +177,24 @@ export const cities: City[] = [
     full: "Apex, NC",
     county: "Wake County",
     geo: { lat: 35.7327, lng: -78.8503 },
-    published: false,
-    tagline: "The Peak of Good Living, with detailing to match.",
+    published: true,
+    tagline:
+      "The Peak of Good Living — premium mobile detailing brought to your Apex driveway.",
     intro:
-      "Apex keeps growing south and west of Cary, and our mobile detailing setup follows. We bring water, power and pro-grade products to driveways across town.",
-    neighborhoods: ["Haddon Hall", "Bella Casa", "Scotts Mill", "Deer Creek", "Downtown Apex"],
-    landmarks: ["Downtown Apex", "Jordan Lake", "Pleasant Park"],
-    availability: "Weekly routes.",
-    travelNote: "Roughly 25 minutes from our Raleigh base.",
-    services: ["ceramic-coating"],
-    nearby: ["cary", "raleigh"],
+      "Apex has grown fast south and west of Cary, and our mobile setup follows the new construction out to Haddon Hall, Bella Casa, Scotts Mill and Deer Creek. Because so many cars here are newer, owners tend to care about protecting them early — and we bring everything needed to do that right at home, from water and power to pro-grade products, with no shop drop-off and no waiting room.",
+    neighborhoods: [
+      "Haddon Hall",
+      "Bella Casa",
+      "Scotts Mill",
+      "Deer Creek",
+      "Sweetwater",
+      "Downtown Apex",
+    ],
+    landmarks: ["Downtown Apex", "Jordan Lake", "Pleasant Park", "Apex Nature Park"],
+    availability: "Routes most weeks.",
+    travelNote: "Roughly 25 minutes from our Raleigh base, alongside our Cary runs.",
+    services: ["ceramic-coating", "interior-detail"],
+    nearby: ["cary", "raleigh", "morrisville"],
   },
   {
     slug: "wake-forest",
@@ -179,17 +202,20 @@ export const cities: City[] = [
     full: "Wake Forest, NC",
     county: "Wake County",
     geo: { lat: 35.9799, lng: -78.5097 },
-    published: false,
-    tagline: "North-of-Raleigh detailing brought to your driveway.",
+    published: true,
+    tagline:
+      "North-of-Raleigh detailing, brought to your Wake Forest driveway.",
     intro:
-      "Wake Forest sits just north of Raleigh, and we schedule routes up for appointments around Heritage, Wakefield and the historic downtown.",
-    neighborhoods: ["Heritage", "Wakefield", "Traditions", "Downtown Wake Forest"],
-    landmarks: ["Downtown Wake Forest", "Falls Lake", "Joyner Park"],
-    availability: "By appointment.",
-    travelNote: "Roughly 25 minutes from our Raleigh base.",
+      "Wake Forest sits just north of Raleigh, an easy run up Capital Boulevard or Falls of Neuse for our mobile studio. We schedule appointments around Heritage, Wakefield, Traditions and the historic downtown, bringing the full setup to your home so there's no trip to a shop and no waiting room — just a finished car in your own driveway.",
+    neighborhoods: ["Heritage", "Wakefield", "Traditions", "Hasentree", "Downtown Wake Forest"],
+    landmarks: ["Downtown Wake Forest", "Falls Lake", "Joyner Park", "Heritage"],
+    availability: "By appointment, with regular north-Raleigh runs.",
+    travelNote: "Roughly 25 minutes north of our Raleigh base.",
     services: ["ceramic-coating"],
     nearby: ["raleigh"],
   },
+
+  /* --- Ready to publish later (data complete, pages off for now) ---- */
   {
     slug: "garner",
     name: "Garner",
@@ -242,6 +268,48 @@ const cityServiceIntros: Record<string, string> = {
     "Cary drivers tend to keep their cars a while, which makes ceramic coating an easy call — years of protection instead of weeks. We bring the full coating process to your Preston, Amberly or Cary Park driveway: decontamination, a leveling polish, panel-wipe and a professional-grade coating, cured and inspected on-site so water beads off and your paint stays glossier for far longer.",
   "durham:ceramic-coating":
     "For Duke and RTP commuters who'd rather not lose a Saturday to a detail shop, ceramic coating in Durham is the protect-it-once-and-forget-it option. We handle the full process — decon, light correction, coating and cure — right at your Trinity Park, Hope Valley or Southpoint-area driveway, leaving you with a hydrophobic finish that sheds Bull City rain and makes every future wash quicker.",
+
+  /* --- Batch 2: Raleigh --- */
+  "raleigh:exterior-detail":
+    "Raleigh's tree-lined ITB streets look beautiful until the pollen, sap and bird traffic land on your paint. An exterior detail goes well past a wash — we hand-wash, chemically decontaminate iron fallout, clay every panel and seal the finish so it stays slick for months. Done in your own driveway from Five Points to Brier Creek, it's the reset that makes a daily-driven Raleigh car look genuinely cared-for again.",
+  "raleigh:wash-and-wax":
+    "For busy Raleigh professionals who keep a tidy car between bigger details, a recurring wash & wax is the easy maintenance step. We hand-wash with the two-bucket method, dress the wheels and tires and lay down a quick spray wax for a few weeks of protection — right outside your North Hills condo or downtown office, with none of the swirl marks a tunnel wash leaves behind.",
+  "raleigh:headlight-restoration":
+    "North Carolina sun is hard on older headlights, and a cloudy, yellowed lens cuts both your night visibility and the look of the whole front end. Our headlight restoration wet-sands away the oxidation and seals the lens so it stays clear — a quick, high-impact fix we handle in your Raleigh driveway, for a fraction of the cost of replacing the housings.",
+  "raleigh:engine-bay-cleaning":
+    "Whether you're prepping a car to sell around Raleigh or you just like everything under the hood as clean as the paint, an engine bay detail makes a real difference. We carefully mask the electronics, degrease and gently rinse, then dress the plastics and hoses so the bay looks factory-fresh — which also makes it far easier to spot a leak early.",
+
+  /* --- Batch 2: Cary --- */
+  "cary:paint-correction":
+    "Cary owners tend to be meticulous, and nothing undoes that care like swirl marks catching the light in a Preston or MacGregor Downs driveway. Paint correction physically removes those swirls, holograms and light scratches rather than filling them in — we machine-polish under correction lighting on-site and can lock in the result with a sealant or ceramic coating so the depth lasts.",
+  "cary:interior-detail":
+    "Between Cary's family neighborhoods and the daily commute, interiors take a beating — crumbs in the Cary Park car seats, coffee on the console, pet hair in the cargo area. Our interior detail resets it all at your home: full vacuum and air blowout, steam on every surface, leather or fabric treated and a light finish, so the cabin feels new again without leaving Amberly or Highcroft.",
+  "cary:exterior-detail":
+    "Cary's tidy, HOA-kept neighborhoods set a high bar, and an exterior detail keeps your car matching the street. We go beyond a wash with iron decontamination, a full clay treatment and a durable sealant that beads water and shrugs off the next round of pollen — all done in your Preston, Cary Park or Stonewater driveway with our own water and power.",
+
+  /* --- Batch 2: Durham --- */
+  "durham:paint-correction":
+    "Dark German and Japanese cars are everywhere around Duke and Ninth Street, and they show every swirl under the Durham sun. Paint correction is how we bring back that liquid-gloss depth — decontaminating, inspecting under correction lights and machine-polishing the clear coat at your Trinity Park or Hope Valley home, with an optional coating to protect the work.",
+  "durham:interior-detail":
+    "Durham's RTP commuters rack up the miles, and the cabin is usually where it shows first — drive-thru mornings, gym bags and daily dust. Our interior detail deep-cleans and resets every surface at your home or office: vacuum, steam, leather conditioning or fabric shampoo, glass and a light fragrance, so the Bull City commute starts in a cabin that actually feels clean.",
+  "durham:exterior-detail":
+    "Bull City weather swings from heavy pollen season to summer downpours, and both leave their mark on your paint. An exterior detail — hand wash, iron decon, clay and a long-lasting sealant — gets the finish genuinely clean and then keeps water and grime sliding off for months. We handle it in your Durham driveway, from Forest Hills to the Southpoint area.",
+
+  /* --- Batch 2: Morrisville --- */
+  "morrisville:ceramic-coating":
+    "Morrisville is full of newer cars owned by RTP and RDU professionals who'd rather protect a finish than chase it. A ceramic coating bonds years of hydrophobic protection to the paint so water sheets off and washes get quick — exactly what you want when the car lives between an airport run and a tech-park parking deck. We prep and apply on-site around Carpenter Village, Kitts Creek and Breckenridge.",
+  "morrisville:interior-detail":
+    "Frequent flyers and RTP commuters spend real time in their cars, and Morrisville interiors collect the evidence — airport coffee, gym bags, the occasional rideshare passenger. Our interior detail resets the cabin at your home or office near Park West Village or Kitts Creek: full vacuum, steam, leather or fabric treatment and a clean, light finish that makes the daily drive feel premium again.",
+
+  /* --- Batch 2: Apex --- */
+  "apex:ceramic-coating":
+    "With so many newer cars in Apex's growing neighborhoods, ceramic coating is the smart move — protect the paint while it's still in great shape rather than correcting it later. We bring the full process to driveways in Haddon Hall, Bella Casa and Scotts Mill: decontamination, a leveling polish, panel-wipe and a professional-grade coating, cured on-site so water beads and the gloss holds for years.",
+  "apex:interior-detail":
+    "Apex's family neighborhoods mean a lot of car seats, sports gear and snack debris — and interiors that need more than a quick vacuum. Our interior detail deep-cleans every surface at your home in Deer Creek, Sweetwater or Scotts Mill: vacuum and air blowout, steam, leather conditioning or fabric shampoo, glass and a light fragrance, so the family hauler feels fresh again.",
+
+  /* --- Batch 2: Wake Forest --- */
+  "wake-forest:ceramic-coating":
+    "Wake Forest drivers often keep their cars for the long haul, which makes ceramic coating an easy decision — years of protection and far easier washes instead of re-waxing every few weeks. We bring the full coating process north to your Heritage, Wakefield or Traditions driveway: decon, light correction, coating and cure, all on-site, leaving a hydrophobic finish built to last.",
 };
 
 /* ------------------------------------------------------------------ */
