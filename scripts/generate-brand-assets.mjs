@@ -35,17 +35,34 @@ const appleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="18
   ${monogram(108, "0.34em")}
 </svg>`;
 
+// Keep brand + domain in sync with lib/site.ts.
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs><radialGradient id="bg" cx="30%" cy="20%" r="90%">
-    <stop offset="0" stop-color="#0e2233"/><stop offset="0.6" stop-color="#000000"/>
-  </radialGradient></defs>
+  <defs>
+    <radialGradient id="bg" cx="62%" cy="22%" r="95%">
+      <stop offset="0" stop-color="#101a26"/><stop offset="0.55" stop-color="#070c14"/><stop offset="1" stop-color="#000000"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="68%" cy="24%" r="40%">
+      <stop offset="0" stop-color="#38B6FF" stop-opacity="0.20"/><stop offset="1" stop-color="#38B6FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <text x="80" y="150" font-family="Poppins, Arial, sans-serif" font-style="italic" font-weight="800" font-size="64" letter-spacing="-3">
-    <tspan fill="#FFFFFF">M</tspan><tspan fill="#38B6FF">S</tspan><tspan fill="#38B6FF" font-size="28" letter-spacing="8" dx="14">DETAILING</tspan>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <!-- oversized faded monogram, right side -->
+  <text x="1150" y="470" text-anchor="end" font-family="Poppins, Arial, sans-serif" font-style="italic" font-weight="800" font-size="520" letter-spacing="-20" fill="#FFFFFF" fill-opacity="0.03">MS</text>
+  <!-- wordmark -->
+  <text x="80" y="135" font-family="Poppins, Arial, sans-serif" font-style="italic" font-weight="800" font-size="56" letter-spacing="-2">
+    <tspan fill="#FFFFFF">M</tspan><tspan fill="#38B6FF">S</tspan><tspan fill="#38B6FF" font-size="24" letter-spacing="7" dx="14">DETAILING</tspan>
   </text>
-  <text x="80" y="320" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="72" fill="#FFFFFF">Your car, detailed to a shine.</text>
-  <text x="80" y="390" font-family="Poppins, Arial, sans-serif" font-weight="500" font-size="32" fill="#9AA7B2">Premium mobile car detailing · Raleigh &amp; Durham, NC</text>
-  <text x="80" y="450" font-family="Poppins, Arial, sans-serif" font-weight="500" font-size="26" fill="#38B6FF" letter-spacing="2">www.mohsshinedetailing.com</text>
+  <!-- eyebrow -->
+  <text x="82" y="258" font-family="Poppins, Arial, sans-serif" font-weight="600" font-size="24" letter-spacing="6" fill="#C9D2DA">PREMIUM MOBILE DETAILING · RALEIGH–DURHAM, NC</text>
+  <!-- headline -->
+  <text x="80" y="350" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="78" fill="#FFFFFF">Mobile Detailing &amp;</text>
+  <text x="80" y="438" font-family="Poppins, Arial, sans-serif" font-weight="800" font-style="italic" font-size="78" fill="#38B6FF">Ceramic Coating.</text>
+  <!-- accent line -->
+  <rect x="82" y="478" width="90" height="3" fill="#38B6FF"/>
+  <!-- footer line -->
+  <text x="80" y="548" font-family="Poppins, Arial, sans-serif" font-weight="500" font-size="28" fill="#9AA7B2">Interior · Exterior · Paint Correction · Ceramic — we come to you.</text>
+  <text x="80" y="592" font-family="Poppins, Arial, sans-serif" font-weight="600" font-size="26" letter-spacing="1" fill="#38B6FF">mohshinedetailing.com</text>
 </svg>`;
 
 const targets = [
