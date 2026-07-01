@@ -69,14 +69,45 @@ export function breadcrumbSchema(items: { name: string; path: string }[]) {
   };
 }
 
-/** Service schema for an individual offering. */
-export function serviceSchema(name: string, description: string) {
+/**
+ * Service schema for an individual offering.
+ *
+ * Pass `opts.areaServed` to scope the service to a single city (used by the
+ * /locations/[city]/[service] pages); omit it to default to the full service
+ * area. Pass `opts.url` to add the canonical page URL + a name.
+ */
+export function serviceSchema(
+  name: string,
+  description: string,
+  opts: { areaServed?: string; url?: string } = {},
+) {
+  const areaServed = opts.areaServed
+    ? [{ "@type": "City", name: opts.areaServed }]
+    : site.areaServed.map((a) => ({ "@type": "City", name: a.replace(/, NC$/, "") }));
+
   return {
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: name,
+    ...(opts.url ? { name, url: opts.url } : {}),
     description,
     provider: { "@id": `${site.url}/#business` },
-    areaServed: site.areaServed.map((a) => a.replace(/, NC$/, "")),
+    areaServed,
+  };
+}
+
+/**
+ * FAQPage schema from a list of question/answer pairs. Reused by the global
+ * FAQ section and every local landing page so Google can surface rich results.
+ */
+export function faqPageSchema(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   };
 }
