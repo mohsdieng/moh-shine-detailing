@@ -13,12 +13,14 @@ export type Stat = {
   decimals?: number;
 };
 
-export const stats: Stat[] = [
-  { label: "Vehicles detailed", value: 1200, suffix: "+" },
-  { label: "Avg. customer rating", value: 4.9, suffix: " ★", decimals: 1 },
-  { label: "Years of detailing", value: 6, suffix: "+" },
-  { label: "Same-day rebookings", value: 92, suffix: "%" },
-];
+/**
+ * Headline stats. Empty until real, owner-confirmed numbers exist — we never
+ * display fabricated counts or ratings. Set `statsPublished = true` once the
+ * array below holds verified figures.
+ * TODO(launch): add real stats, e.g. { label: "Vehicles detailed", value: <real>, suffix: "+" }.
+ */
+export const statsPublished = false;
+export const stats: Stat[] = [];
 
 export type ValueProp = {
   title: string;
@@ -57,50 +59,14 @@ export type Testimonial = {
   rating: number;
 };
 
-export const testimonials: Testimonial[] = [
-  {
-    quote:
-      "Showed up on time, worked in my driveway, and my car looked better than the day I bought it. The interior smelled brand new. Booking again next month.",
-    name: "James R.",
-    detail: "Full Detail · Raleigh",
-    rating: 5,
-  },
-  {
-    quote:
-      "I'm picky about my paint and was nervous about a wash. They hand-washed everything and there wasn't a single swirl. Genuinely impressed with the care.",
-    name: "Priya S.",
-    detail: "Paint Correction · Durham",
-    rating: 5,
-  },
-  {
-    quote:
-      "So convenient not having to drive anywhere. Friendly, professional, and the truck came out spotless inside and out. Highly recommend to anyone in the area.",
-    name: "Marcus T.",
-    detail: "Interior Detail · Cary",
-    rating: 5,
-  },
-  {
-    quote:
-      "Quoted me fair, started on time and the result speaks for itself. The paint looks deeper than it did when I picked the car up from the dealer.",
-    name: "Hannah L.",
-    detail: "Paint Correction · Chapel Hill",
-    rating: 5,
-  },
-  {
-    quote:
-      "Cleaned out two years of kid carpool damage. My wife thought I traded the car in. Worth every dollar.",
-    name: "Devon W.",
-    detail: "Interior Detail · Apex",
-    rating: 5,
-  },
-  {
-    quote:
-      "Professional from booking to finish. They were communicative, finished on time and left the driveway cleaner than they found it.",
-    name: "Sara K.",
-    detail: "Full Detail · Morrisville",
-    rating: 5,
-  },
-];
+/**
+ * Customer testimonials. Empty until real, owner-approved reviews exist — we
+ * never publish fabricated reviews. Set `reviewsPublished = true` once the
+ * array below holds genuine quotes (ideally mirrored from your Google profile).
+ * TODO(launch): add real reviews, e.g. { quote, name, detail, rating }.
+ */
+export const reviewsPublished = false;
+export const testimonials: Testimonial[] = [];
 
 export type Faq = { q: string; a: string };
 

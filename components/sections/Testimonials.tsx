@@ -5,28 +5,39 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Container } from "../ui/Container";
 import { Reveal } from "../Reveal";
-import { testimonials } from "@/lib/content";
+import { testimonials, reviewsPublished } from "@/lib/content";
 
 /**
  * Reviews — luxury single-quote rotator.
  *
  * One large editorial pull-quote at a time with thin pagination dots and an
  * auto-advance every 7s that pauses on hover/focus. Restrained, magazine-like.
+ *
+ * Renders nothing until real reviews exist (reviewsPublished) — we never show
+ * fabricated testimonials or ratings.
  */
 export function Testimonials() {
   const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const enabled = reviewsPublished && testimonials.length > 0;
 
   useEffect(() => {
-    if (paused || reduce) return;
+    if (!enabled || paused || reduce) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % testimonials.length);
     }, 7000);
     return () => clearInterval(id);
-  }, [paused, reduce]);
+  }, [enabled, paused, reduce]);
+
+  if (!enabled) return null;
 
   const current = testimonials[index];
+  // Aggregate derived from the real reviews actually shown — never hardcoded.
+  const count = testimonials.length;
+  const avgRating = (
+    testimonials.reduce((sum, t) => sum + t.rating, 0) / count
+  ).toFixed(1);
 
   return (
     <section
@@ -57,7 +68,7 @@ export function Testimonials() {
                 ))}
               </div>
               <p className="mt-3 text-xs uppercase tracking-widest text-chrome">
-                4.9 average · 1,200+ details
+                {avgRating} average · {count} review{count === 1 ? "" : "s"}
               </p>
               <Link
                 href="/reviews"

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
-import { site } from "@/lib/site";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/Reveal";
-import { Button } from "@/components/ui/Button";
+import { BookButton } from "@/components/ui/BookButton";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { JsonLd, breadcrumbSchema } from "@/components/JsonLd";
 
@@ -75,9 +74,7 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="mt-8">
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                Book a Detail
-              </Button>
+              <BookButton>Book a Detail</BookButton>
             </div>
           </Reveal>
 

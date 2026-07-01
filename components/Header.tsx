@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Logo } from "./Logo";
 import { Button } from "./ui/Button";
+import { BookButton } from "./ui/BookButton";
 import { Magnetic } from "./anim/Magnetic";
-import { site } from "@/lib/site";
+import { site, hasPhone } from "@/lib/site";
 import { services } from "@/lib/services";
 import { publishedCities } from "@/lib/cities";
 
@@ -193,9 +194,7 @@ export function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Magnetic strength={8}>
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                Book Now
-              </Button>
+              <BookButton>Book Now</BookButton>
             </Magnetic>
           </div>
 
@@ -286,23 +285,19 @@ export function Header() {
                 transition={{ delay: 0.45, duration: 0.4 }}
                 className="mt-6 flex flex-col gap-3"
               >
-                <Button
-                  href={site.bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  size="lg"
-                  className="w-full"
-                >
+                <BookButton size="lg" className="w-full">
                   Book Now
-                </Button>
-                <Button
-                  href={site.phoneHref}
-                  variant="secondary"
-                  size="lg"
-                  className="w-full"
-                >
-                  Call {site.phone}
-                </Button>
+                </BookButton>
+                {hasPhone && (
+                  <Button
+                    href={site.phoneHref}
+                    variant="secondary"
+                    size="lg"
+                    className="w-full"
+                  >
+                    Call {site.phone}
+                  </Button>
+                )}
               </motion.div>
 
               <p className="mt-8 text-xs uppercase tracking-wider text-slate-muted">

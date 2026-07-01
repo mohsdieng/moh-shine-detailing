@@ -1,8 +1,8 @@
 import { Container } from "../ui/Container";
 import { Reveal } from "../Reveal";
 import { Button } from "../ui/Button";
+import { BookButton } from "../ui/BookButton";
 import { Magnetic } from "../anim/Magnetic";
-import { site } from "@/lib/site";
 
 type LocationCtaProps = {
   heading: React.ReactNode;
@@ -27,9 +27,7 @@ export function LocationCta({ heading, body }: LocationCtaProps) {
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Magnetic>
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-                Book Now
-              </Button>
+              <BookButton size="lg">Book Now</BookButton>
             </Magnetic>
             <Magnetic strength={6}>
               <Button href="/contact" variant="secondary" size="lg">

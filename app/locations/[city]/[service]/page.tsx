@@ -15,6 +15,7 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
+import { BookButton } from "@/components/ui/BookButton";
 import { Magnetic } from "@/components/anim/Magnetic";
 import { serviceIcons } from "@/components/icons";
 import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
@@ -120,9 +121,7 @@ export default function CityServicePage({
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Magnetic strength={10}>
-                <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-                  Book Now
-                </Button>
+                <BookButton size="lg">Book Now</BookButton>
               </Magnetic>
               <Magnetic strength={8}>
                 <Button href="/contact" variant="secondary" size="lg">
@@ -208,9 +207,7 @@ export default function CityServicePage({
 
               <div className="mt-2 flex flex-col gap-3">
                 <Magnetic>
-                  <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg" className="w-full">
-                    Book Now
-                  </Button>
+                  <BookButton size="lg" className="w-full">Book Now</BookButton>
                 </Magnetic>
                 <Magnetic strength={6}>
                   <Button href={`/services/${service.slug}`} variant="secondary" size="lg" className="w-full">

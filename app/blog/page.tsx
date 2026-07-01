@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { allPosts, featuredPost, blogCategories } from "@/lib/blog";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
+import { Button } from "@/components/ui/Button";
+import { BookButton } from "@/components/ui/BookButton";
 import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
 import { PostCard } from "@/components/blog/PostCard";
 import { JsonLd, breadcrumbSchema } from "@/components/JsonLd";
@@ -124,20 +125,10 @@ export default function BlogIndexPage() {
               Triangle. Tell us your vehicle and we&apos;ll send a quote.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href={site.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center justify-center gap-2.5 rounded-sm bg-shine px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-black transition-all duration-300 hover:bg-shine-400"
-              >
-                Book Now
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center gap-2.5 rounded-sm border border-chrome/30 px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:border-shine hover:text-shine"
-              >
+              <BookButton size="lg">Book Now</BookButton>
+              <Button href="/contact" variant="secondary" size="lg">
                 Get a Quote
-              </Link>
+              </Button>
             </div>
           </Reveal>
         </Container>

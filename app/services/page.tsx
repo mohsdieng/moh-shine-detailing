@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { services } from "@/lib/services";
-import { site } from "@/lib/site";
+import { BookButton } from "@/components/ui/BookButton";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -118,9 +118,7 @@ export default function ServicesPage() {
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
             <Magnetic>
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer" size="lg">
-                Book a Detail
-              </Button>
+              <BookButton size="lg">Book a Detail</BookButton>
             </Magnetic>
             <Magnetic strength={6}>
               <Button href="/contact" variant="secondary" size="lg">

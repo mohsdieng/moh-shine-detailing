@@ -4,7 +4,7 @@ import { Section } from "../ui/Section";
 import { Reveal } from "../Reveal";
 import { Tilt } from "../anim/Tilt";
 import { CountUp } from "../anim/CountUp";
-import { valueProps, stats } from "@/lib/content";
+import { valueProps, stats, statsPublished } from "@/lib/content";
 
 /**
  * Why Us / Stats — a two-part block:
@@ -53,7 +53,8 @@ export function WhyUs() {
         ))}
       </div>
 
-      {/* Live stat strip */}
+      {/* Live stat strip — only when real, confirmed numbers exist */}
+      {statsPublished && stats.length > 0 && (
       <Reveal delay={0.15} className="mt-12">
         <dl className="grid grid-cols-2 gap-y-8 rounded-3xl border border-white/10 bg-black/40 p-8 sm:grid-cols-4 sm:p-10">
           {stats.map((s) => (
@@ -73,6 +74,7 @@ export function WhyUs() {
           ))}
         </dl>
       </Reveal>
+      )}
     </Section>
   );
 }

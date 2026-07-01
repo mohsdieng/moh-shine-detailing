@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { publishedCities, neighborhoodList } from "@/lib/cities";
-import { site } from "@/lib/site";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/Reveal";
-import { Button } from "@/components/ui/Button";
+import { BookButton } from "@/components/ui/BookButton";
 import { Magnetic } from "@/components/anim/Magnetic";
 import { Breadcrumbs } from "@/components/locations/Breadcrumbs";
 import { LocationCta } from "@/components/locations/LocationCta";
@@ -109,9 +108,7 @@ export default function LocationsIndexPage() {
           </p>
           <div className="mt-6">
             <Magnetic>
-              <Button href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-                Book a Detail
-              </Button>
+              <BookButton>Book a Detail</BookButton>
             </Magnetic>
           </div>
         </Reveal>
