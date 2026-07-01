@@ -4,6 +4,8 @@ import { Gallery } from "@/components/sections/Gallery";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { PackagesTeaser } from "@/components/sections/PackagesTeaser";
 import { Contact } from "@/components/sections/Contact";
+import { Container } from "@/components/ui/Container";
+import { TrustBadges } from "@/components/TrustBadges";
 
 /**
  * Homepage — luxury automotive launch page narrative.
@@ -18,6 +20,12 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      {/* Trust strip — the four promises a visitor needs before booking */}
+      <section className="border-y border-chrome-line bg-navy-950 py-6">
+        <Container>
+          <TrustBadges />
+        </Container>
+      </section>
       <Services />
       <Gallery />
       <Testimonials />

@@ -72,12 +72,24 @@ const config: Config = {
           "0%,100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-14px)" },
         },
+        // Diagonal light sheen sweeping across a glossy surface (ceramic demo).
+        sheen: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(320%)" },
+        },
+        // Tiny idle jiggle on water beads so they read as liquid, not stickers.
+        bead: {
+          "0%,100%": { transform: "translate(0,0) scale(1)" },
+          "50%": { transform: "translate(0,-1.5px) scale(1.04)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
         shimmer: "shimmer 2.5s linear infinite",
         "pulse-ring": "pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
         float: "float 6s ease-in-out infinite",
+        sheen: "sheen 6s ease-in-out infinite",
+        bead: "bead 4s ease-in-out infinite",
       },
       backgroundImage: {
         "shine-grid":

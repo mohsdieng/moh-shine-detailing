@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Container } from "../ui/Container";
 import { CinematicPanel } from "../anim/CinematicPanel";
 import { CinematicVideo } from "../anim/CinematicVideo";
+import { ServiceDemoFrame, hasServiceDemo } from "../demos/ServiceDemo";
 import { mediaFor } from "@/lib/media";
 import type { Service } from "@/lib/services";
 
@@ -50,19 +51,27 @@ export function Feature({ service, index, total, align = "left", href }: Feature
     <section className="relative border-t border-chrome-line bg-black py-20 sm:py-28 lg:py-32">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          {/* Visual — cinematic video panel with graceful fallback. When the
-              video / poster files at the conventional paths are absent (or fail
-              to load), CinematicVideo renders the icon-focal CinematicPanel
-              instead so the layout never feels empty. */}
+          {/* Visual — an interactive service demonstration when the service has
+              one (paint correction, ceramic, headlight, interior, exterior),
+              otherwise the cinematic video panel. CinematicVideo falls back to
+              the icon-focal CinematicPanel when its files are absent so the
+              layout never feels empty. */}
           <motion.div {...fadeIn} className={visualClasses}>
-            <CinematicVideo
-              video={m.video}
-              poster={m.poster}
-              tag={service.shortTitle.toUpperCase()}
-              alt={`${service.title} — premium mobile detailing in Raleigh-Durham`}
-              className="aspect-[4/5] sm:aspect-[5/6] md:aspect-[4/5]"
-              fallback={<CinematicPanel icon={service.icon} bare />}
-            />
+            {hasServiceDemo(service.slug) ? (
+              <ServiceDemoFrame
+                slug={service.slug}
+                className="aspect-[4/5] sm:aspect-[5/6] md:aspect-[4/5]"
+              />
+            ) : (
+              <CinematicVideo
+                video={m.video}
+                poster={m.poster}
+                tag={service.shortTitle.toUpperCase()}
+                alt={`${service.title} — premium mobile detailing in Raleigh-Durham`}
+                className="aspect-[4/5] sm:aspect-[5/6] md:aspect-[4/5]"
+                fallback={<CinematicPanel icon={service.icon} bare />}
+              />
+            )}
           </motion.div>
 
           {/* Text */}
